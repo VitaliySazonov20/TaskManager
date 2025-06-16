@@ -1,0 +1,52 @@
+
+How the JPA can derive the query from the name of the method
+
+    [action]By[property][condition][operator]?[property]?
+
+
+    Action: find, read, get, query, search, count, delete, exists
+    Property: Entity field name (e.g., user, status, dueDate)
+    Condition: Equals, Like, Between, LessThan, NotNull, etc.
+
+
+
+    === Spring Data JPA Query Methods Cheat Sheet ===
+
+    1. BASIC ACTIONS:
+       - findBy*      : Returns entities (e.g., findByStatus)
+       - countBy*     : Returns long (e.g., countByUser)
+       - existsBy*    : Returns boolean (e.g., existsByEmail)
+       - deleteBy*    : Void (e.g., deleteByUserId)
+
+    2. CONDITIONS:
+       Equals/Is       : findByStatusEquals
+       Not             : findByUserNot
+       Like            : findByTitleLike("%urgent%")
+       Containing      : findByDescriptionContaining
+       Starting/Ending : findByEmailStartingWith
+       Less/Greater    : findByDueDateLessThan
+       Between         : findByCreatedAtBetween
+       Null/NotNull    : findByAssignedToNull
+       True/False      : findByCompletedTrue
+       IgnoreCase      : findByEmailIgnoreCase
+
+    3. COMBINATORS:
+       And             : findByStatusAndUser
+       Or              : findByStatusOrPriority
+
+    4. SORTING/PAGING:
+       OrderBy         : findByStatusOrderByDueDateDesc
+       First/Top       : findFirst5ByStatus
+
+    5. ADVANCED:
+       Distinct        : findDistinctByTitle
+       @Query          : Use for complex JPQL/SQL
+
+    === WARNING SIGNS ===
+    ! Method >4 conditions? Use @Query
+    ! Not working? Check:
+       - Field names match exactly
+       - CamelCase (dueDate, not duedate)
+       - Return type matches
+
+    Enable SQL logging: spring.jpa.show-sql=true
