@@ -2,12 +2,17 @@ package com.PetProject.Vitaliy.TaskManager.entity;
 
 import com.PetProject.Vitaliy.TaskManager.entity.Enum.Role;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.math.BigInteger;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name= "user_credentials")
-public class UserCredentials {
+public class UserCredentials implements UserDetails {
 
     @Id
     private BigInteger userId;
@@ -60,5 +65,20 @@ public class UserCredentials {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+    }
+
+    @Override
+    public String getPassword() {
+        return this.passwordHash;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.user.getEmail();
     }
 }
