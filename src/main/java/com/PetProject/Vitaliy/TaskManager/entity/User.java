@@ -38,6 +38,7 @@ public class User {
     }
 
     public User() {
+        this.createdAt = LocalDateTime.now();
     }
 
     public BigInteger getId() {
