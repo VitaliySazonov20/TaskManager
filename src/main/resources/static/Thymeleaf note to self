@@ -1,0 +1,76 @@
+
+========== Thymeleaf expressions ========
+
+${...}: Variable expressions
+
+<h1> <strong th:text = "${user.firstname}></strong></h1>
+
+*{...}: Selection expressions
+
+Define a th:object attribute to have the model selected.
+Works similar to Variable expressions
+<div th:object = "${user}">
+    <h1> <strong th:text = "*{firstname}></strong></h1>
+</div>
+
+#{...}: Message (i18n) expressions
+
+Used for common texts
+#{application.properties key}
+
+@{...}: Link (URL) expressions
+
+Regular link
+<a th:href = "@{/link/to/desired/page}> </a>
+Passing a variable to the link
+<a th:href = "@{/{variable}(variable = ${variable})}></a>
+Link to static folder to use css
+<link th:href = "@{/css/file.css}" rel="stylesheet">
+
+~{...}: Fragment expressions
+
+Define a th:fragment attribute to select a tag such as:
+<div th:fragment = "fragment">
+    <h1>example</h1>
+    <h2>example 2 </h2>
+</div>
+
+Use th:replace or th:insert to replace/insert the selected fragment with/into the current tag.
+<div th:insert = "~{link/to/fragment :: fragment}"></div>
+
+
+=========== Thymeleaf attributes ===========
+
+th:text - evaluate variable expression as text
+<div th:text = "${user.firstname}> </div>
+
+th:each - use as a loop through the modal attribute
+<div th:each = "user : ${users}"> </div>
+Can have a status variable
+<div th:each = "user, userStatus : ${users}"></div>
+The status can be used to get the following properties:
+.index: the index of the current iteration
+.count: amount of elements processed so far
+.size: total number of elements in the list
+.even/.odd: weather current iteration is even or odd.
+.first
+.last
+
+th:if and th:unless - conditional attributes
+If is for true statements while unless is for false statements
+<a th:href = "@{/link/to/page}" th:if="${user.role} == ADMIN ">Update</ad>
+<a th:href = "@{/link/to/page}" th:unless="${user.role} == ADMIN ">View</ad>
+
+th:switch and th:case - switch case attributes
+<div th:switch = "${user.role}">
+    <p th:case = "ADMIN"> User is an admin </p>
+    <p th:case = "USER> User has no admin rights </p>
+    <p th:case = "*"> User is something else </p>
+</div>
+* is use as the default case
+
+th:action attribute is used to define action URL for form
+
+th:object attribute is used to bind the fields of the form to a model object
+
+th:field attribute points to the field name of the model object
