@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")  // Custom login page
                         .loginProcessingUrl("/login")  // Process form submissions
-                        .defaultSuccessUrl("/dashboard", true)  // Redirect after success
+                        .defaultSuccessUrl("/tasks", true)  // Redirect after success
                         .failureUrl("/login?error=true")  // Redirect on failure
                         .permitAll()
                 )

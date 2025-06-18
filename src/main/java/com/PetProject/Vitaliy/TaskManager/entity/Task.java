@@ -9,7 +9,7 @@ import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name= "users")
+@Table(name= "tasks")
 public class Task {
 
     @Id

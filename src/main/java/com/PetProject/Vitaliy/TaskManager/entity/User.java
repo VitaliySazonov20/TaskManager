@@ -102,4 +102,13 @@ public class User {
         assignedTasks.remove(task);
         task.setAssignedTo(null);
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
 }
