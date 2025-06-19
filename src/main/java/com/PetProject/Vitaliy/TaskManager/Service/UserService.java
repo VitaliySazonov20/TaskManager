@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
+import java.util.List;
+
 @Service
 public class UserService {
 
@@ -41,5 +44,15 @@ public class UserService {
         user.setUserCredentials(userCredentials);
         userRepo.save(user);
         userCredRepo.save(userCredentials);
+    }
+
+    @Transactional
+    public List<User> getAllUsers(){
+        return userRepo.findAll();
+    }
+
+    @Transactional
+    public User getUserById(BigInteger id){
+        return userRepo.getById(id);
     }
 }

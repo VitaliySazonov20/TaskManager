@@ -3,10 +3,13 @@ package com.PetProject.Vitaliy.TaskManager.entity;
 import com.PetProject.Vitaliy.TaskManager.entity.Enum.TaskStatus;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+
 
 @Entity
 @Table(name= "tasks")
@@ -24,7 +27,8 @@ public class Task {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+    @Column(name = "status", columnDefinition = "task_status")
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private TaskStatus status;
 
     @Column(name = "due_date")
@@ -56,6 +60,8 @@ public class Task {
     }
 
     public Task() {
+        this.creationDate = LocalDateTime.now();
+        this.status = TaskStatus.TODO;
     }
 
     public BigInteger getId() {
