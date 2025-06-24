@@ -8,6 +8,7 @@ import com.PetProject.Vitaliy.TaskManager.entity.Enum.TaskStatus;
 import com.PetProject.Vitaliy.TaskManager.entity.Task;
 import com.PetProject.Vitaliy.TaskManager.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -63,9 +64,10 @@ public class GeneralViewController {
 
     @GetMapping("/dashboard")
     public String viewDashboard(Model model){
-        List<Task> allTasks = taskService.getAllTasks();
+        List<Task> allTasks = taskService.eagerLoadAllTasksWithTheirUsers();
         model.addAttribute("allTasks",allTasks);
         model.addAttribute("TaskStatus", TaskStatus.class);
+        model.addAttribute("currentUserId", securityContextService.getCurrentUser().getId());
         return "dashboard";
     }
 
@@ -80,5 +82,12 @@ public class GeneralViewController {
     public String completeTask(@PathVariable BigInteger id){
         taskService.updateStatus(id,TaskStatus.DONE);
         return "redirect:/dashboard";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/users")
+    public String viewAllUsers(Model model){
+        model.addAttribute("allUsers", userService.getAllUsers());
+        return "allUsers";
     }
 }

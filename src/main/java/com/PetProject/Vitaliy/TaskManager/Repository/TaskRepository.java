@@ -14,6 +14,10 @@ public interface TaskRepository extends JpaRepository<Task, Long > {
 
     List<Task> findByAssignedTo(User user);
     List<Task> findByCreatedBy(User user);
+
+    @Query("SELECT t FROM Task t LEFT JOIN FETCH t.assignedTo")
+    List<Task> findAllTasksWithUsers();
+
     List<Task> findByStatusNotAndDueDateBefore(TaskStatus status, LocalDateTime now);
     Task findById(BigInteger id);
     void deleteById(BigInteger id);

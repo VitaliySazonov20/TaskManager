@@ -127,4 +127,12 @@ public class Task {
     public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
     }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "title='" + title + '\'' +
+                ", assignedTo=" + assignedTo +
+                '}';
+    }
 }

@@ -64,4 +64,8 @@ public class TaskService {
     public void deleteTaskById(BigInteger id){
         taskRepo.deleteById(id);
     }
+
+    public List<Task> eagerLoadAllTasksWithTheirUsers(){
+        return taskRepo.findAllTasksWithUsers();
+    }
 }

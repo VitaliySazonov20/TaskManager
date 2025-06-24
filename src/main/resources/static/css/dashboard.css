@@ -32,7 +32,8 @@ body {
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s;
-            margin-bottom: 10px;
+            margin-bottom: 0px;
+            margin-right: 5px; /* Space between buttons */
         }
 
         .btn-accept {
@@ -52,4 +53,33 @@ body {
         .btn-complete:hover {
             background-color: #138496;
         }
+
+
+        .assignee-text {
+            font-size: 0.95rem;
+            color: #555;
+            font-weight: 500;
+        }
+        /* Button container for inline layout */
+        .button-container {
+            display: flex;
+        }
+
+        .assignee-row {
+            display: flex;
+            justify-content: space-between; /* Pushes items to opposite sides */
+            align-items: center; /* Vertically centers items */
+            margin-bottom: 0.5rem;
+            width: 100%;
+        }
+        .assignee-row:has(> .assignee-text) {
+            /* When assignee exists */
+            justify-content: space-between;
+        }
+
+        .assignee-row:not(:has(> .assignee-text)) {
+            /* When no assignee */
+            justify-content: flex-start;
+        }
+
 
