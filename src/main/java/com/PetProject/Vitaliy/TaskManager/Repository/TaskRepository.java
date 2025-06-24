@@ -6,6 +6,7 @@ import com.PetProject.Vitaliy.TaskManager.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,4 +15,6 @@ public interface TaskRepository extends JpaRepository<Task, Long > {
     List<Task> findByAssignedTo(User user);
     List<Task> findByCreatedBy(User user);
     List<Task> findByStatusNotAndDueDateBefore(TaskStatus status, LocalDateTime now);
+    Task findById(BigInteger id);
+    void deleteById(BigInteger id);
 }

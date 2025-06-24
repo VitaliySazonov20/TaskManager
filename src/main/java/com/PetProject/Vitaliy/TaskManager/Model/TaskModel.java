@@ -1,24 +1,22 @@
 package com.PetProject.Vitaliy.TaskManager.Model;
 
-import com.PetProject.Vitaliy.TaskManager.entity.User;
-
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
-public class AddingATask {
+public class TaskModel {
     private String title;
     private String description;
     private LocalDateTime dueDate;
     private BigInteger userId;
 
 
-    public AddingATask(String title, String description, LocalDateTime dueDate) {
+    public TaskModel(String title, String description, LocalDateTime dueDate) {
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
     }
 
-    public AddingATask() {
+    public TaskModel() {
     }
 
     public BigInteger getUserId() {

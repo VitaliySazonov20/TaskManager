@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- Column Fragment -->
+<div th:fragment="task-column(title, status, color)">
+
+        <div th:classappend="'column-header bg-' + ${color}" class="p-2 rounded-top">
+            <h5 class="m-0" th:text="${title}"></h5>
+        </div>
+        <div class="column-body border p-3 rounded-bottom" style="min-height: 70vh; overflow-y: auto;">
+            <div th:each="task : ${allTasks}"
+                 th:if="${task.status == status}">
+                <!-- Reusable task card -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h6 th:text="${task.title}"></h6>
+                        <form th:if ="${task.status == TaskStatus.TODO}" th:action="@{'/tasks/' + ${task.id} + '/accept'}" method="post">
+                            <button type="submit" th:text="Accept" class="btn-accept"></button>
+                        </form>
+                        <form th:if ="${task.status == TaskStatus.IN_PROGRESS || task.status == TaskStatus.OVERDUE}" th:action="@{'/tasks/' + ${task.id} + '/complete'}" method="post">
+                            <button type="submit" th:text="Complete" class="btn-complete"></button>
+                        </form>
+
+                        <p class="card-text" th:text="${task.description}"></p>
+                        <small class="text-muted"
+                            th:text="${task.dueDate != null} ? ${#temporals.format(task.dueDate, 'MMM dd')}: 'No due date'">
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+</body>
+</html>

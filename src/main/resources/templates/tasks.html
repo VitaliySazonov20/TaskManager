@@ -22,6 +22,7 @@
                 <th>Task Title</th>
                 <th>Description</th>
                 <th>Status</th>
+                <th>Creation Date</th>
                 <th>Due Date</th>
                 <th>Last Updated</th>
             </tr>
@@ -35,6 +36,7 @@
                     <span th:classappend="'status-badge status-' + ${task.status}"
                           th:text="${task.status}"></span>
                 </td>
+                <td th:text="${#temporals.format(task.creationDate, 'yyyy-MM-dd HH:mm')}"></td>
                 <td th:text="${#temporals.format(task.dueDate, 'yyyy-MM-dd HH:mm')}"></td>
                 <td th:text="${#temporals.format(task.updateDate, 'yyyy-MM-dd HH:mm')}"></td>
             </tr>
@@ -62,6 +64,7 @@
                 <th>Task Title</th>
                 <th>Description</th>
                 <th>Status</th>
+                <th>Creation Date</th>
                 <th>Due Date</th>
                 <th>Last Updated</th>
                 <th>Assigned To</th>
@@ -76,6 +79,7 @@
                     <span th:classappend="'status-badge status-' + ${task.status}"
                           th:text="${task.status}"></span>
                 </td>
+                <td th:text="${#temporals.format(task.creationDate, 'yyyy-MM-dd HH:mm')}"></td>
                 <td th:text="${#temporals.format(task.dueDate, 'yyyy-MM-dd HH:mm')}"></td>
                 <td th:text="${#temporals.format(task.updateDate, 'yyyy-MM-dd HH:mm')}"></td>
                 <td>

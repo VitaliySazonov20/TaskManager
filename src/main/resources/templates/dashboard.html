@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+</head>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<div class="dashboard">
+    <h2 class="dashboard-header">
+        <i class="bi bi-kanban me-2"></i>Scrum Dashboard
+    </h2>
+
+<div class="row g-3">
+    <!-- To Do Column -->
+    <div class="col-md-3">
+        <div th:replace="~{fragments/dashboardColumn :: task-column('To Do', ${TaskStatus.TODO}, 'info')}"></div>
+    </div>
+    <!-- In Progress Column -->
+    <div class="col-md-3">
+        <div th:replace="~{fragments/dashboardColumn :: task-column('In Progress', ${TaskStatus.IN_PROGRESS}, 'warning')}"></div>
+    </div>
+    <!-- Overdue Column -->
+    <div class="col-md-3">
+        <div th:replace="~{fragments/dashboardColumn :: task-column('Overdue', ${TaskStatus.OVERDUE}, 'danger')}"></div>
+    </div>
+    <!-- Done Column -->
+    <div class="col-md-3">
+        <div th:replace="~{fragments/dashboardColumn :: task-column('Done', ${TaskStatus.DONE}, 'success')}"></div>
+    </div>
+</div>
+</div>
+</body>
+</html>

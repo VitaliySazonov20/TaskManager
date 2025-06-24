@@ -1,7 +1,6 @@
 package com.PetProject.Vitaliy.TaskManager.Controller;
 
-import com.PetProject.Vitaliy.TaskManager.Model.AddingATask;
-import com.PetProject.Vitaliy.TaskManager.Repository.TaskRepository;
+import com.PetProject.Vitaliy.TaskManager.Model.TaskModel;
 import com.PetProject.Vitaliy.TaskManager.Service.SecurityContextService;
 import com.PetProject.Vitaliy.TaskManager.Service.TaskService;
 import com.PetProject.Vitaliy.TaskManager.Service.UserService;
@@ -13,9 +12,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class GeneralViewController {
         List<Task> assignedTasks = taskService.getAllTaskAssignedToUser(currentUser);
         List<Task> createdTasks = taskService.getAllTasksCreatedByUser(currentUser);
 
-        AddingATask newTask = new AddingATask();
+        TaskModel newTask = new TaskModel();
         model.addAttribute("newTask", newTask);
         model.addAttribute("assignedTasks",
                 assignedTasks != null ? assignedTasks : Collections.emptyList());
@@ -49,7 +49,7 @@ public class GeneralViewController {
     }
 
     @PostMapping("/tasks")
-    public String addATask(Model model, @ModelAttribute("newTask") AddingATask newTask){
+    public String addATask(Model model, @ModelAttribute("newTask") TaskModel newTask){
         User currentUser = securityContextService.getCurrentUser();
         Task task = new Task();
         task.setTitle(newTask.getTitle());
@@ -59,5 +59,26 @@ public class GeneralViewController {
         task.setAssignedTo(userService.getUserById(newTask.getUserId()));
         taskService.saveTask(task);
         return "redirect:/tasks";
+    }
+
+    @GetMapping("/dashboard")
+    public String viewDashboard(Model model){
+        List<Task> allTasks = taskService.getAllTasks();
+        model.addAttribute("allTasks",allTasks);
+        model.addAttribute("TaskStatus", TaskStatus.class);
+        return "dashboard";
+    }
+
+    @PostMapping("/tasks/{id}/accept")
+    public String acceptTask(@PathVariable BigInteger id){
+        User user = securityContextService.getCurrentUser();
+        taskService.updateStatus(id,TaskStatus.IN_PROGRESS, user);
+        return "redirect:/dashboard";
+    }
+
+    @PostMapping("/tasks/{id}/complete")
+    public String completeTask(@PathVariable BigInteger id){
+        taskService.updateStatus(id,TaskStatus.DONE);
+        return "redirect:/dashboard";
     }
 }
