@@ -2,3 +2,165 @@ body {
      background-color: #f8f9fa;
      padding: 20px;
 }
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Header Section */
+.user-section {
+    margin-bottom: 30px;
+}
+
+.user-header {
+    color: #3d5a80;
+    font-weight: 600;
+    display: inline-block;
+    margin-right: 15px;
+}
+
+.user-header i {
+    color: #0d6efd; /* Bootstrap primary color */
+}
+
+/* Add User Button */
+.add-user-btn {
+    float: right;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Table Styling */
+.user-table {
+    margin-top: 20px;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.user-table thead th {
+    background-color: #3d5a80;
+    color: white;
+    font-weight: 500;
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.user-table tbody tr {
+    transition: background-color 0.2s;
+}
+
+.user-table tbody tr:hover {
+    background-color: #f1f8ff;
+}
+
+.user-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #e9ecef;
+    vertical-align: middle;
+}
+
+.user-table td:last-child {
+    text-align: center;
+}
+
+/* Action Buttons */
+.btn-group {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-outline-primary, .btn-outline-danger {
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.btn-outline-primary:hover {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Modal Styling */
+.modal-content {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    background-color: #0d6efd;
+    color: white;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+}
+
+.modal-footer {
+    border-top: none;
+    background-color: #f8f9fa;
+    border-radius: 0 0 10px 10px;
+}
+
+#confirmDelete {
+    transition: background-color 0.2s;
+}
+
+#confirmDelete:hover {
+    background-color: #bb2d3b;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .user-header {
+        display: block;
+        margin-bottom: 15px;
+    }
+
+    .add-user-btn {
+        float: none;
+        margin-bottom: 15px;
+    }
+
+    .user-table thead {
+        display: none;
+    }
+
+    .user-table tbody tr {
+        display: block;
+        margin-bottom: 15px;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+    }
+
+    .user-table tbody td {
+        display: block;
+        text-align: right;
+        border-bottom: none;
+    }
+
+    .user-table tbody td::before {
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
+        color: #495057;
+    }
+
+    .user-table td:last-child {
+        text-align: right;
+    }
+}

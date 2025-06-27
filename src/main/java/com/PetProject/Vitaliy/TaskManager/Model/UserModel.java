@@ -18,6 +18,12 @@ public class UserModel {
         this.email = email;
     }
 
+    public UserModel(String firstName, String lastName, String email) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
+
     public BigInteger getId() {
         return id;
     }

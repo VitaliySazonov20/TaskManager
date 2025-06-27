@@ -3,7 +3,6 @@ var userIdToDelete;
 document.getElementById('deleteConfirmModal').addEventListener('show.bs.modal', function(event) {
     const button = event.relatedTarget;
     userIdToDelete = button.getAttribute('data-user-id');
-    console.log("userIdToDelete" + userIdToDelete);
 });
 
 

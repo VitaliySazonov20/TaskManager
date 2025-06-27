@@ -3,16 +3,22 @@ package com.PetProject.Vitaliy.TaskManager.Controller;
 
 import com.PetProject.Vitaliy.TaskManager.Exception.UserNotFoundException;
 import com.PetProject.Vitaliy.TaskManager.Model.UserModel;
+import com.PetProject.Vitaliy.TaskManager.Service.CustomUserDetailsService;
+import com.PetProject.Vitaliy.TaskManager.Service.SecurityContextService;
+import com.PetProject.Vitaliy.TaskManager.Service.UserCredentialsService;
 import com.PetProject.Vitaliy.TaskManager.Service.UserService;
 import com.PetProject.Vitaliy.TaskManager.entity.User;
+import com.PetProject.Vitaliy.TaskManager.entity.UserCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -21,6 +27,12 @@ public class RESTController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SecurityContextService securityContextService;
+
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
 
     @GetMapping("/users")
     public List<UserModel> getAllUserModels(){
@@ -35,8 +47,44 @@ public class RESTController {
             userService.deleteUserById(BigInteger.valueOf(Long.parseLong(id)));
             return ResponseEntity.ok().body("User deleted successfully");
         } catch(UserNotFoundException e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("Error deleting user");
+        }
+
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/users/{id}")
+    public ResponseEntity<?> editUser(@PathVariable String id){
+        try{
+            User user = userService.getUserById(BigInteger.valueOf(Long.parseLong(id)));
+            UserModel userModel = new UserModel(user.getFirstName(), user.getLastName(), user.getEmail());
+            return ResponseEntity.ok(userModel);
+        } catch (UserNotFoundException e){
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error fetching user");
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "An unexpected error occurred"));
+        }
+    }
+
+
+
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/users/{id}")
+    public ResponseEntity<String> editUser(@PathVariable String id,
+                                           @RequestBody UserModel userModel){
+        try {
+            User user = userService.getUserById(BigInteger.valueOf(Long.parseLong(id)));
+            user.setFirstName(userModel.getFirstName());
+            user.setLastName(userModel.getLastName());
+            user.setEmail(user.getEmail());
+            userService.saveUser(user);
+            return ResponseEntity.ok().body("User updated successfully");
+        } catch(UserNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error editing user");
         }
 
     }

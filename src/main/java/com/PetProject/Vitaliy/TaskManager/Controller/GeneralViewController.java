@@ -2,6 +2,7 @@ package com.PetProject.Vitaliy.TaskManager.Controller;
 
 import com.PetProject.Vitaliy.TaskManager.Exception.UserNotFoundException;
 import com.PetProject.Vitaliy.TaskManager.Model.TaskModel;
+import com.PetProject.Vitaliy.TaskManager.Model.UserModel;
 import com.PetProject.Vitaliy.TaskManager.Service.SecurityContextService;
 import com.PetProject.Vitaliy.TaskManager.Service.TaskService;
 import com.PetProject.Vitaliy.TaskManager.Service.UserService;
@@ -92,6 +93,8 @@ public class GeneralViewController {
     @GetMapping("/users")
     public String viewAllUsers(Model model){
         model.addAttribute("allUsers", userService.getAllUsers());
+        model.addAttribute("selectedUser", new UserModel());
+        model.addAttribute("newUser", new UserModel());
         return "allUsers";
     }
 }
