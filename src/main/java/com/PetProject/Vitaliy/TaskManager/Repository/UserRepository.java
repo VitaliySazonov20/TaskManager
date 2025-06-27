@@ -4,10 +4,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.math.BigInteger;
 
-public interface UserRepository extends JpaRepository<User, Long >{
+public interface UserRepository extends JpaRepository<User, BigInteger >{
 
     boolean existsByEmail(String email);
 
+    boolean existsById(BigInteger id);
+
     User getById(BigInteger id);
+
+    void deleteById(BigInteger id);
 
 }

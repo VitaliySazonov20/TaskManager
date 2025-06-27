@@ -1,5 +1,6 @@
 package com.PetProject.Vitaliy.TaskManager.Controller;
 
+import com.PetProject.Vitaliy.TaskManager.Exception.UserNotFoundException;
 import com.PetProject.Vitaliy.TaskManager.Model.TaskModel;
 import com.PetProject.Vitaliy.TaskManager.Service.SecurityContextService;
 import com.PetProject.Vitaliy.TaskManager.Service.TaskService;
@@ -8,13 +9,12 @@ import com.PetProject.Vitaliy.TaskManager.entity.Enum.TaskStatus;
 import com.PetProject.Vitaliy.TaskManager.entity.Task;
 import com.PetProject.Vitaliy.TaskManager.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
 import java.util.Collections;
@@ -57,7 +57,11 @@ public class GeneralViewController {
         task.setDescription(newTask.getDescription());
         task.setCreatedBy(currentUser);
         task.setDueDate(newTask.getDueDate());
-        task.setAssignedTo(userService.getUserById(newTask.getUserId()));
+        User user = userService.getUserById(newTask.getUserId());
+        task.setAssignedTo(user);
+        if(user ==null){
+            task.setStatus(TaskStatus.BACKLOG);
+        }
         taskService.saveTask(task);
         return "redirect:/tasks";
     }

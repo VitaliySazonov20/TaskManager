@@ -21,6 +21,10 @@
     <div class="col-md-3">
         <div th:replace="~{fragments/dashboardColumn :: task-column('To Do', ${TaskStatus.TODO}, 'info')}"></div>
     </div>
+    <!-- Backlog Column -->
+    <div class="col-md-3">
+        <div th:replace="~{fragments/dashboardColumn :: task-column('Backlog', ${TaskStatus.BACKLOG}, 'secondary')}"></div>
+    </div>
     <!-- In Progress Column -->
     <div class="col-md-3">
         <div th:replace="~{fragments/dashboardColumn :: task-column('In Progress', ${TaskStatus.IN_PROGRESS}, 'warning')}"></div>

@@ -19,8 +19,11 @@
                             <span th:if="${task.assignedTo != null}"
                                 th:text="${task.assignedTo.firstName +' '+ task.assignedTo.lastName}"
                                 class="assignee-text"></span>
+                            <span th:unless="${task.assignedTo != null}"
+                                  th:text="'Task is unassigned'"
+                                  class="assignee-text"></span>
                             <div class="button-container">
-                                <form th:if ="${task.status == TaskStatus.TODO && (task.assignedTo == null || task.assignedTo.id == currentUserId)}" th:action="@{'/tasks/' + ${task.id} + '/accept'}" method="post">
+                                <form th:if ="${(task.status == TaskStatus.TODO || task.status == TaskStatus.BACKLOG) && (task.assignedTo == null || task.assignedTo.id == currentUserId)}" th:action="@{'/tasks/' + ${task.id} + '/accept'}" method="post">
                                     <button type="submit" th:text="Accept" class="btn-accept"></button>
                                 </form>
                                 <form th:if ="${(task.status == TaskStatus.IN_PROGRESS || task.status == TaskStatus.OVERDUE)&& task.assignedTo.id == currentUserId }" th:action="@{'/tasks/' + ${task.id} + '/complete'}" method="post">

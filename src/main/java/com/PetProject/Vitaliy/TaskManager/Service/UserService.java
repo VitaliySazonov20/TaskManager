@@ -1,5 +1,6 @@
 package com.PetProject.Vitaliy.TaskManager.Service;
 
+import com.PetProject.Vitaliy.TaskManager.Exception.UserNotFoundException;
 import com.PetProject.Vitaliy.TaskManager.Model.RegistrationForm;
 import com.PetProject.Vitaliy.TaskManager.Repository.UserCredentialsRepository;
 import com.PetProject.Vitaliy.TaskManager.Repository.UserRepository;
@@ -8,6 +9,7 @@ import com.PetProject.Vitaliy.TaskManager.entity.User;
 import com.PetProject.Vitaliy.TaskManager.entity.UserCredentials;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +55,17 @@ public class UserService {
 
     @Transactional
     public User getUserById(BigInteger id){
+        if(!userRepo.existsById(id)){
+            throw new UserNotFoundException(id);
+        }
         return userRepo.getById(id);
+    }
+
+    @Transactional
+    public void deleteUserById(BigInteger id){
+        if(!userRepo.existsById(id)){
+            throw new UserNotFoundException(id);
+        }
+        userRepo.deleteById(id);
     }
 }
