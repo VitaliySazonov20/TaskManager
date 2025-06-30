@@ -24,7 +24,7 @@
 
             </ul>
             <div class="d-flex">
-                <span class="navbar-text me-3" th:text="${#authentication.name}">User</span>
+                <a class="navbar-text me-3" th:text="${#authentication.name}" th:href = "@{/user}">User</a>
                 <form th:action="@{/logout}" method="post">
                     <button class="btn btn-outline-light" type="submit">Logout</button>
                 </form>
