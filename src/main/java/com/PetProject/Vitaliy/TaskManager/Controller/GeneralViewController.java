@@ -1,6 +1,7 @@
 package com.PetProject.Vitaliy.TaskManager.Controller;
 
 import com.PetProject.Vitaliy.TaskManager.Exception.UserNotFoundException;
+import com.PetProject.Vitaliy.TaskManager.Model.PasswordChange;
 import com.PetProject.Vitaliy.TaskManager.Model.TaskModel;
 import com.PetProject.Vitaliy.TaskManager.Model.UserModel;
 import com.PetProject.Vitaliy.TaskManager.Service.SecurityContextService;
@@ -107,8 +108,10 @@ public class GeneralViewController {
         editedUser.setFirstName(currentUser.getFirstName());
         editedUser.setLastName(currentUser.getLastName());
         editedUser.setEmail(currentUser.getEmail());
+        PasswordChange passwordChange = new PasswordChange();
         model.addAttribute("currentUser", currentUser);
         model.addAttribute("editedUser",editedUser);
+        model.addAttribute("passwordChange", passwordChange);
         return "currentUser";
     }
 
