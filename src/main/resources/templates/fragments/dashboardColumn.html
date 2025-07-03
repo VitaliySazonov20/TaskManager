@@ -12,7 +12,7 @@
                  th:if="${task.status == status}">
                 <!-- Reusable task card -->
                 <div class="card mb-3">
-                    <div class="card-body">
+                    <div class="card-body" th:data-task-id="${task.id}" onclick="openTask(this)">
                         <h6 th:text="${task.title}"></h6>
 
                         <div class="assignee-row">

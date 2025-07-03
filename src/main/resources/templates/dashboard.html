@@ -11,6 +11,11 @@
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
+<div th:if="${permissionDenied}" class="alert alert-danger alert-dismissible fade show sticky-top mt-3 mx-3" role="alert">
+    <i class="bi bi-shield-lock-fill me-2"></i>
+    <strong>Access Denied</strong> - You don't have permission to view that task
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 <div class="dashboard">
     <h2 class="dashboard-header">
         <i class="bi bi-kanban me-2"></i>Scrum Dashboard
@@ -39,5 +44,15 @@
     </div>
 </div>
 </div>
+
+<script>
+    function openTask(card){
+        const taskId = card.getAttribute('data-task-id');
+        window.location.href = `/tasks/${taskId}`;
+        console.log('hello');
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

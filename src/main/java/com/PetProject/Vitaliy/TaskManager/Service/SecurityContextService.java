@@ -17,5 +17,12 @@ public class SecurityContextService {
         throw new IllegalStateException("User not authenticated or principal is of wrong type");
     }
 
+    public boolean isAdmin(){
+        Authentication auth = SecurityContextHolder.getContext().
+                getAuthentication();
+        return auth.getAuthorities().stream()
+                .anyMatch(a->a.getAuthority().equals("ROLE_ADMIN"));
+    }
+
 
 }

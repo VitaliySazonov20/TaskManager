@@ -4,9 +4,8 @@ import com.PetProject.Vitaliy.TaskManager.Exception.UserNotFoundException;
 import com.PetProject.Vitaliy.TaskManager.Model.PasswordChange;
 import com.PetProject.Vitaliy.TaskManager.Model.TaskModel;
 import com.PetProject.Vitaliy.TaskManager.Model.UserModel;
-import com.PetProject.Vitaliy.TaskManager.Service.SecurityContextService;
-import com.PetProject.Vitaliy.TaskManager.Service.TaskService;
-import com.PetProject.Vitaliy.TaskManager.Service.UserService;
+import com.PetProject.Vitaliy.TaskManager.Service.*;
+import com.PetProject.Vitaliy.TaskManager.entity.Comment;
 import com.PetProject.Vitaliy.TaskManager.entity.Enum.TaskStatus;
 import com.PetProject.Vitaliy.TaskManager.entity.Task;
 import com.PetProject.Vitaliy.TaskManager.entity.User;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigInteger;
+import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,6 +37,11 @@ public class GeneralViewController {
     @Autowired
     private SecurityContextService securityContextService;
 
+    @Autowired
+    private TaskSecurityService taskSecurityService;
+
+    @Autowired
+    private CommentService commentService;
 
     @GetMapping("/tasks")
     public String showAllTasks(Model model){
@@ -92,6 +97,36 @@ public class GeneralViewController {
         return "redirect:/dashboard";
     }
 
+//    @PreAuthorize("""
+//            hasRole('ADMIN') or
+//            @taskSecurityService.isCreator(#taskId,principal) or
+//            @taskSecurityService.isAssignee(#taskId,principal)
+//            """)
+    @GetMapping("/tasks/{taskId}")
+    public String viewTask(@PathVariable BigInteger taskId,
+                           @ModelAttribute("allTasks") List<Task> allTasks,
+                           Model model){
+        if(!securityContextService.isAdmin() &&
+                !taskSecurityService.isCreator(taskId) &&
+                !taskSecurityService.isAssignee(taskId) &&
+                !taskSecurityService.assigneeIsNull(taskId)){
+            allTasks = taskService.getAllTasks();
+
+            model.addAttribute("permissionDenied", true);
+            model.addAttribute("allTasks", allTasks);
+            model.addAttribute("TaskStatus", TaskStatus.class);
+            model.addAttribute("currentUserId", securityContextService.getCurrentUser().getId());
+            return "dashboard";
+        }
+        Task currentTask = taskService.getTaskById(taskId);
+        List<Comment> allComments = commentService.getCommentsById(taskId);
+        model.addAttribute("currentTask", currentTask);
+        model.addAttribute("TaskStatus",TaskStatus.class);
+        model.addAttribute("allComments",allComments);
+        return "currentTask";
+    }
+
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/users")
     public String viewAllUsers(Model model){
@@ -113,6 +148,12 @@ public class GeneralViewController {
         model.addAttribute("editedUser",editedUser);
         model.addAttribute("passwordChange", passwordChange);
         return "currentUser";
+    }
+
+    @GetMapping("/comments/fragment")
+    public String getCommentsFragment(@RequestParam BigInteger taskId, Model model){
+        model.addAttribute("allComments", commentService.getCommentsById(taskId));
+        return "fragments/allComments :: commentsList";
     }
 
 }

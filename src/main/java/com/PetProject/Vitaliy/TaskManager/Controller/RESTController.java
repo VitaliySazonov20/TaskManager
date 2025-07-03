@@ -2,17 +2,17 @@ package com.PetProject.Vitaliy.TaskManager.Controller;
 
 
 import com.PetProject.Vitaliy.TaskManager.Exception.UserNotFoundException;
+import com.PetProject.Vitaliy.TaskManager.Model.CommentModel;
 import com.PetProject.Vitaliy.TaskManager.Model.UserModel;
-import com.PetProject.Vitaliy.TaskManager.Service.CustomUserDetailsService;
-import com.PetProject.Vitaliy.TaskManager.Service.SecurityContextService;
-import com.PetProject.Vitaliy.TaskManager.Service.UserCredentialsService;
-import com.PetProject.Vitaliy.TaskManager.Service.UserService;
+import com.PetProject.Vitaliy.TaskManager.Service.*;
+import com.PetProject.Vitaliy.TaskManager.entity.Comment;
 import com.PetProject.Vitaliy.TaskManager.entity.User;
 import com.PetProject.Vitaliy.TaskManager.entity.UserCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +33,12 @@ public class RESTController {
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
+
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    private CommentService commentService;
 
     @GetMapping("/users")
     public List<UserModel> getAllUserModels(){
@@ -87,6 +93,26 @@ public class RESTController {
                     .body("Error editing user");
         }
 
+    }
+
+    @PostMapping("/tasks/{taskId}/comments")
+    public ResponseEntity<CommentModel> addComment(
+            @PathVariable BigInteger taskId,
+            @RequestBody String message,
+            @AuthenticationPrincipal UserCredentials userCredentials) {
+        Comment comment = new Comment();
+        comment.setTask(taskService.getTaskById(taskId));
+        comment.setUser(userCredentials.getUser());
+        comment.setText(message);
+        commentService.saveComment(comment);
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new CommentModel(
+                        comment.getTask().getId(),
+                        comment.getUser().getId(),
+                        comment.getId(),
+                        comment.getText(),
+                        comment.getCreationTimestamp()
+                ));
     }
 
 }

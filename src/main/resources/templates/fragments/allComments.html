@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div class="comments-container" id="comments-container" th:fragment="commentsList">
+    <div th:each="comment : ${allComments}" class="comment-card">
+        <div class="comment-header">
+                            <span class="comment-author"
+                                  th:text="${comment.user.firstName + ' ' + comment.user.lastName}">
+                                User Name
+                            </span>
+            <span class="comment-time"
+                  th:text="${#temporals.format(comment.creationTimestamp, 'MMM dd, yyyy HH:mm')}">
+                                Oct 15, 2023 14:30
+                            </span>
+        </div>
+        <div class="comment-text" th:text="${comment.text}">
+            This is a sample comment message...
+        </div>
+    </div>
+</div>
+</body>
+</html>

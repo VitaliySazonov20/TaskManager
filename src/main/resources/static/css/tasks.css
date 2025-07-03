@@ -42,23 +42,23 @@ body {
             font-weight: 500;
         }
         .status-TODO {
-            background-color: #ffd166;
+            background-color: #0dcaf0;
             color: #333;
         }
         .status-BACKLOG {
-            background-color: #d3d3d3;
+            background-color: #6c757d;
             color: white;
         }
         .status-IN_PROGRESS {
-            background-color: #06d6a0;
+            background-color: #ffc107;
             color: white;
         }
         .status-OVERDUE {
-            background-color: #ef476f;
+            background-color: #dc3545;
             color: white;
         }
         .status-DONE {
-            background-color: #118ab2;
+            background-color: #198754;
             color: white;
         }
         .add-task-btn {
