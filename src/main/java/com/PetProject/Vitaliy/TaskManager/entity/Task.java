@@ -1,5 +1,6 @@
 package com.PetProject.Vitaliy.TaskManager.entity;
 
+import com.PetProject.Vitaliy.TaskManager.entity.Enum.Priority;
 import com.PetProject.Vitaliy.TaskManager.entity.Enum.TaskStatus;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -31,6 +32,11 @@ public class Task {
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private TaskStatus status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "priority", columnDefinition = "task_priority")
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    private Priority priority;
+
     @Column(name = "due_date")
     private LocalDateTime dueDate;
 
@@ -51,17 +57,21 @@ public class Task {
     private User createdBy;
 
 
+
+
     public Task(User createdBy, TaskStatus status, String description, String title) {
         this.createdBy = createdBy;
         this.status = status;
         this.description = description;
         this.title = title;
         this.creationDate = LocalDateTime.now();
+        this.priority = Priority.NORMAL;
     }
 
     public Task() {
         this.creationDate = LocalDateTime.now();
         this.status = TaskStatus.TODO;
+        this.priority = Priority.NORMAL;
     }
 
     public BigInteger getId() {
@@ -126,6 +136,14 @@ public class Task {
 
     public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public Priority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Priority priority) {
+        this.priority = priority;
     }
 
     @Override

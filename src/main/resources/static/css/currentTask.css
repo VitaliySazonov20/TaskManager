@@ -7,13 +7,6 @@
     background-color: #f8f9fa;
     border-radius: 0.5rem;
 }
-.urgency-indicator {
-    width: 8px;
-    border-radius: 4px;
-}
-.due-date-warning {
-    animation: pulse 2s infinite;
-}
 @keyframes pulse {
     0% { opacity: 1; }
     50% { opacity: 0.6; }

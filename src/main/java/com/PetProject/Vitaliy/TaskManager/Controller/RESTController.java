@@ -6,6 +6,9 @@ import com.PetProject.Vitaliy.TaskManager.Model.CommentModel;
 import com.PetProject.Vitaliy.TaskManager.Model.UserModel;
 import com.PetProject.Vitaliy.TaskManager.Service.*;
 import com.PetProject.Vitaliy.TaskManager.entity.Comment;
+import com.PetProject.Vitaliy.TaskManager.entity.Enum.Priority;
+import com.PetProject.Vitaliy.TaskManager.entity.Enum.TaskStatus;
+import com.PetProject.Vitaliy.TaskManager.entity.Task;
 import com.PetProject.Vitaliy.TaskManager.entity.User;
 import com.PetProject.Vitaliy.TaskManager.entity.UserCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,4 +118,13 @@ public class RESTController {
                 ));
     }
 
+    @PatchMapping("/tasks/{taskId}/priority")
+    public ResponseEntity<String> changePriority(@PathVariable BigInteger taskId,
+                                                 @RequestBody String priorityString){
+        Task task = taskService.getTaskById(taskId);
+        Priority priority = Priority.valueOf(priorityString);
+        task.setPriority(priority);
+        taskService.saveTask(task);
+        return ResponseEntity.status(HttpStatus.OK).body("Status successfully changed");
+    }
 }

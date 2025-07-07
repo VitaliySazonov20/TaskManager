@@ -1,5 +1,7 @@
 package com.PetProject.Vitaliy.TaskManager.Model;
 
+import com.PetProject.Vitaliy.TaskManager.entity.Enum.Priority;
+
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
@@ -8,6 +10,7 @@ public class TaskModel {
     private String description;
     private LocalDateTime dueDate;
     private BigInteger userId;
+    private Priority priority;
 
 
     public TaskModel(String title, String description, LocalDateTime dueDate) {
@@ -17,6 +20,14 @@ public class TaskModel {
     }
 
     public TaskModel() {
+    }
+
+    public Priority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Priority priority) {
+        this.priority = priority;
     }
 
     public BigInteger getUserId() {

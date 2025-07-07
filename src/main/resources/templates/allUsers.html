@@ -42,7 +42,7 @@
                             <button class="btn btn-sm btn-outline-primary"
                                     data-bs-toggle="modal"
                                     data-bs-target="#editUserModal"
-                                    th:data-user-id = ${user.id}>
+                                    th:data-user-id=${user.id}>
                                 <i class="bi bi-pencil"></i>
                             </button>
 
@@ -62,32 +62,97 @@
 
     </div>
 </div>
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create new user</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form th:object="${newUser}" th:action="@{/register}" method="post">
+
+                    <!--First Name-->
+                    <div class="mb-3">
+                        <label>First Name:</label>
+                        <input type="text" th:field="*{firstName}" class="form-control"
+                               th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid' : ''"
+                               placeholder="First Name" required>
+                        <div th:if="${#fields.hasErrors('firstName')}" class="invalid-feedback">
+                            <span th:errors="*{firstName}"></span>
+                        </div>
+                    </div>
+                    <!--Last Name-->
+                    <div class="mb-3">
+                        <label>Last Name:</label>
+                        <input type="text" th:field="*{lastName}" class="form-control"
+                               placeholder="Last Name">
+                    </div>
+                    <!--Email-->
+                    <div class="mb-3">
+                        <label>Email:</label>
+                        <input type="email" th:field="*{email}" class="form-control"
+                               th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                               placeholder="Email@example.com" required>
+                        <div th:if="${#fields.hasErrors('email')}" class="invalid-feedback">
+                            <span th:errors="*{email}"></span>
+                        </div>
+                    </div>
+                    <!--Password-->
+                    <div class="mb-3">
+                        <label>Password:</label>
+                        <input type="password" th:field="*{password}" class="form-control"
+                               th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
+                               placeholder="Password" required>
+                        <div th:if="${#fields.hasErrors('password')}" class="invalid-feedback">
+                            <span th:errors="*{password}"></span>
+                        </div>
+                    </div>
+                    <!--Confirmation Password-->
+                    <div class="mb-3">
+                        <label>Confirm Password:</label>
+                        <input type="password" th:field="*{confirmationPassword}" class="form-control"
+                               th:classappend="${#fields.hasErrors('confirmationPassword')} ? 'is-invalid' : ''"
+                               placeholder="Confirm Password" required>
+                        <div th:if="${#fields.hasErrors('passwordsMatch')}" class="invalid-feedback">
+                            <span th:errors="*{passwordsMatch}"></span>
+                        </div>
+                        <!--Register button-->
+                        <div class="modal-footer">
+                        <button class="btn btn-primary" type="submit">Register</button>
+                        </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit user</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header">
+                <h5 class="modal-title">Edit user</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="userFirstName" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="userFirstName" name="firstName" required>
                 </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="userFirstName" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="userFirstName" name="firstName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="userLastName" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="userLastName" name="lastName">
-                    </div>
-                    <div class="mb-3">
-                        <label for="userEmail" class="form-label">Email</label>
-                        <input type="text" class="form-control" id="userEmail" name="email" required>
-                    </div>
+                <div class="mb-3">
+                    <label for="userLastName" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="userLastName" name="lastName">
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id = "confirmChanges">Confirm changes</button>
+                <div class="mb-3">
+                    <label for="userEmail" class="form-label">Email</label>
+                    <input type="text" class="form-control" id="userEmail" name="email" required>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmChanges">Confirm changes</button>
+            </div>
         </div>
     </div>
 </div>

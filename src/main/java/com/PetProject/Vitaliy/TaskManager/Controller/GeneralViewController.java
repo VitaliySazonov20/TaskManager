@@ -2,13 +2,16 @@ package com.PetProject.Vitaliy.TaskManager.Controller;
 
 import com.PetProject.Vitaliy.TaskManager.Exception.UserNotFoundException;
 import com.PetProject.Vitaliy.TaskManager.Model.PasswordChange;
+import com.PetProject.Vitaliy.TaskManager.Model.RegistrationForm;
 import com.PetProject.Vitaliy.TaskManager.Model.TaskModel;
 import com.PetProject.Vitaliy.TaskManager.Model.UserModel;
 import com.PetProject.Vitaliy.TaskManager.Service.*;
 import com.PetProject.Vitaliy.TaskManager.entity.Comment;
+import com.PetProject.Vitaliy.TaskManager.entity.Enum.Priority;
 import com.PetProject.Vitaliy.TaskManager.entity.Enum.TaskStatus;
 import com.PetProject.Vitaliy.TaskManager.entity.Task;
 import com.PetProject.Vitaliy.TaskManager.entity.User;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,6 +58,7 @@ public class GeneralViewController {
                 assignedTasks != null ? assignedTasks : Collections.emptyList());
         model.addAttribute("createdTasks",
                 createdTasks != null? createdTasks: Collections.emptyList());
+        model.addAttribute("priorityList", Priority.values());
         return "tasks";
     }
 
@@ -66,11 +70,13 @@ public class GeneralViewController {
         task.setDescription(newTask.getDescription());
         task.setCreatedBy(currentUser);
         task.setDueDate(newTask.getDueDate());
-        User user = userService.getUserById(newTask.getUserId());
-        task.setAssignedTo(user);
-        if(user ==null){
+        if(newTask.getUserId() ==null){
             task.setStatus(TaskStatus.BACKLOG);
+        } else {
+            User user = userService.getUserById(newTask.getUserId());
+            task.setAssignedTo(user);
         }
+        task.setPriority(newTask.getPriority());
         taskService.saveTask(task);
         return "redirect:/tasks";
     }
@@ -85,16 +91,18 @@ public class GeneralViewController {
     }
 
     @PostMapping("/tasks/{id}/accept")
-    public String acceptTask(@PathVariable BigInteger id){
+    public String acceptTask(@PathVariable BigInteger id,
+                             HttpServletRequest request){
         User user = securityContextService.getCurrentUser();
         taskService.updateStatus(id,TaskStatus.IN_PROGRESS, user);
-        return "redirect:/dashboard";
+        return "redirect:" + request.getHeader("Referer");
     }
 
     @PostMapping("/tasks/{id}/complete")
-    public String completeTask(@PathVariable BigInteger id){
+    public String completeTask(@PathVariable BigInteger id,
+                               HttpServletRequest request){
         taskService.updateStatus(id,TaskStatus.DONE);
-        return "redirect:/dashboard";
+        return "redirect:" + request.getHeader("Referer");
     }
 
 //    @PreAuthorize("""
@@ -122,7 +130,9 @@ public class GeneralViewController {
         List<Comment> allComments = commentService.getCommentsById(taskId);
         model.addAttribute("currentTask", currentTask);
         model.addAttribute("TaskStatus",TaskStatus.class);
+        model.addAttribute("TaskPriority", Priority.class);
         model.addAttribute("allComments",allComments);
+        model.addAttribute("currentUserId", securityContextService.getCurrentUser().getId());
         return "currentTask";
     }
 
@@ -132,7 +142,7 @@ public class GeneralViewController {
     public String viewAllUsers(Model model){
         model.addAttribute("allUsers", userService.getAllUsers());
         model.addAttribute("selectedUser", new UserModel());
-        model.addAttribute("newUser", new UserModel());
+        model.addAttribute("newUser", new RegistrationForm());
         return "allUsers";
     }
 
@@ -154,6 +164,15 @@ public class GeneralViewController {
     public String getCommentsFragment(@RequestParam BigInteger taskId, Model model){
         model.addAttribute("allComments", commentService.getCommentsById(taskId));
         return "fragments/allComments :: commentsList";
+    }
+
+
+    @GetMapping("/badgeContainer/fragment")
+    public String getBadgeContainerFragment(@RequestParam BigInteger taskId, Model model){
+        model.addAttribute("currentTask", taskService.getTaskById(taskId));
+        model.addAttribute("TaskStatus",TaskStatus.class);
+        model.addAttribute("TaskPriority", Priority.class);
+        return "fragments/task-badge-container :: badge-container";
     }
 
 }

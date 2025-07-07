@@ -27,18 +27,31 @@
             <div class="task-header">
                 <div class="d-flex justify-content-between align-items-start">
                     <h2 class="card-title mb-3" th:text="${currentTask.title}">Task Title</h2>
-                    <span th:switch="${currentTask.status}">
-                        <span th:case="${TaskStatus.TODO}" class="badge align-self-start bg-info"
-                              th:text="${currentTask.status}"></span>
-                        <span th:case="${TaskStatus.BACKLOG}" class="badge align-self-start bg-secondary"
-                              th:text="${currentTask.status}"></span>
-                        <span th:case="${TaskStatus.IN_PROGRESS}" class="badge align-self-start bg-warning"
-                              th:text="${currentTask.status}"></span>
-                        <span th:case="${TaskStatus.OVERDUE}" class="badge align-self-start bg-danger"
-                              th:text="${currentTask.status}"></span>
-                        <span th:case="${TaskStatus.DONE}" class="badge align-self-start bg-success"
-                              th:text="${currentTask.status}"></span>
-                    </span>
+                    <div th:replace="~{fragments/task-badge-container :: badge-container}"></div>
+<!--                    <div class="d-flex gap-2">-->
+<!--                        <span th:switch="${currentTask.status}">-->
+<!--                            <span th:case="${TaskStatus.TODO}" class="badge align-self-start bg-info fs-6 py-2"-->
+<!--                                th:text="${currentTask.status}"></span>-->
+<!--                            <span th:case="${TaskStatus.BACKLOG}" class="badge align-self-start bg-secondary fs-6 py-2"-->
+<!--                                th:text="${currentTask.status}"></span>-->
+<!--                            <span th:case="${TaskStatus.IN_PROGRESS}" class="badge align-self-start bg-warning fs-6 py-2"-->
+<!--                                th:text="${currentTask.status}"></span>-->
+<!--                            <span th:case="${TaskStatus.OVERDUE}" class="badge align-self-start bg-danger fs-6 py-2"-->
+<!--                                th:text="${currentTask.status}"></span>-->
+<!--                            <span th:case="${TaskStatus.DONE}" class="badge align-self-start bg-success fs-6 py-2"-->
+<!--                                  th:text="${currentTask.status}"></span>-->
+<!--                        </span>-->
+<!--                        <span th:switch="${currentTask.priority}">-->
+<!--                            <span th:case="${TaskPriority.MINOR}" class="badge align-self-start bg-secondary fs-6 py-2"-->
+<!--                                th:text="${TaskPriority.MINOR}"></span>-->
+<!--                            <span th:case="${TaskPriority.NORMAL}" class="badge align-self-start bg-info fs-6 py-2"-->
+<!--                                th:text="${TaskPriority.NORMAL}"></span>-->
+<!--                            <span th:case="${TaskPriority.CRITICAL}" class="badge align-self-start bg-warning fs-6 py-2"-->
+<!--                                th:text="${TaskPriority.CRITICAL}"></span>-->
+<!--                            <span th:case="${TaskPriority.URGENT}" class="badge align-self-start bg-danger fs-6 py-2"-->
+<!--                                th:text="${TaskPriority.URGENT}"></span>-->
+<!--                        </span>-->
+<!--                    </div>-->
                 </div>
 
                 <p class="card-text" th:text="${currentTask.description}">Task description...</p>
@@ -101,16 +114,22 @@
 
             <!-- Action Buttons -->
             <div class="mt-4 d-flex gap-2">
+                <form th:if="${(currentTask.status == TaskStatus.TODO || currentTask.status == TaskStatus.BACKLOG) && (currentTask.assignedTo == null || currentTask.assignedTo.id == currentUserId)}"
+                      th:action="@{'/tasks/' + ${currentTask.id} + '/accept'}" method="post">
+                    <button type="submit" th:text="Accept" class="btn btn-success px-4 py-2">
+                        <i class="bi bi-check-circle me-2"></i> Accept Task
+                    </button>
+                </form>
+                <form th:if="${(currentTask.status == TaskStatus.IN_PROGRESS || currentTask.status == TaskStatus.OVERDUE)&& currentTask.assignedTo.id == currentUserId }"
+                      th:action="@{'/tasks/' + ${currentTask.id} + '/complete'}" method="post">
+                    <button type="submit" th:text="Complete" class="btn btn-primary px-4 py-2">
+                        <i class="bi bi-check-square me-2"></i> Complete Task
+                    </button>
+                </form>
+
                 <a th:href="@{/dashboard}" class="btn btn-outline-secondary">
                     <i class="bi bi-arrow-left"></i> Back to Dashboard
                 </a>
-
-                <!-- Show edit button only for authorized users -->
-                <!--                <a th:if="${taskSecurityService.isEditableBy(currentTask, securityContextService.getCurrentUser())}"-->
-                <!--                   th:href="@{'/tasks/' + ${currentTask.id} + '/edit'}"-->
-                <!--                   class="btn btn-primary">-->
-                <!--                    <i class="bi bi-pencil"></i> Edit Task-->
-                <!--                </a>-->
             </div>
         </div>
     </div>
@@ -120,29 +139,12 @@
                 <h4 class="card-title mb-4"><i class="bi bi-chat-left-text"></i> Comments</h4>
 
                 <!-- Comments Container -->
-<!--                <div class="comments-container" id="comments-container" th:fragment="commentsList">-->
-<!--                    <div th:each="comment : ${allComments}" class="comment-card">-->
-<!--                        <div class="comment-header">-->
-<!--                            <span class="comment-author"-->
-<!--                                  th:text="${comment.user.firstName + ' ' + comment.user.lastName}">-->
-<!--                                User Name-->
-<!--                            </span>-->
-<!--                            <span class="comment-time"-->
-<!--                                  th:text="${#temporals.format(comment.creationTimestamp, 'MMM dd, yyyy HH:mm')}">-->
-<!--                                Oct 15, 2023 14:30-->
-<!--                            </span>-->
-<!--                        </div>-->
-<!--                        <div class="comment-text" th:text="${comment.text}">-->
-<!--                            This is a sample comment message...-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-
                 <div th:replace="~{fragments/allComments :: commentsList}"></div>
 
                 <!-- Comment Form -->
                 <div class="comment-form">
-                    <textarea id = "comment-input" class="form-control mb-2" th:data-task-id="${currentTask.id}" ></textarea>
+                    <textarea id="comment-input" class="form-control mb-2"
+                              th:data-task-id="${currentTask.id}"></textarea>
                     <button id="post-comment-btn" type="button" class="btn btn-primary">Post Comment</button>
                 </div>
             </div>
