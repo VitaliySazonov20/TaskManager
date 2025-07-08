@@ -57,7 +57,7 @@
                        th:classappend="${#fields.hasErrors('confirmationPassword')} ? 'is-invalid' : ''"
                        placeholder="Confirm Password" required>
                 <div th:if="${#fields.hasErrors('passwordsMatch')}" class="invalid-feedback">
-                    <span th:errors="*{passwordsMatch}"></span>
+                    <span th:errors="*{passwordsMatch}"></span></div>
             </div>
             <!--Register button-->
             <button class="btn btn-primary" type="submit">Register</button>

@@ -28,30 +28,6 @@
                 <div class="d-flex justify-content-between align-items-start">
                     <h2 class="card-title mb-3" th:text="${currentTask.title}">Task Title</h2>
                     <div th:replace="~{fragments/task-badge-container :: badge-container}"></div>
-<!--                    <div class="d-flex gap-2">-->
-<!--                        <span th:switch="${currentTask.status}">-->
-<!--                            <span th:case="${TaskStatus.TODO}" class="badge align-self-start bg-info fs-6 py-2"-->
-<!--                                th:text="${currentTask.status}"></span>-->
-<!--                            <span th:case="${TaskStatus.BACKLOG}" class="badge align-self-start bg-secondary fs-6 py-2"-->
-<!--                                th:text="${currentTask.status}"></span>-->
-<!--                            <span th:case="${TaskStatus.IN_PROGRESS}" class="badge align-self-start bg-warning fs-6 py-2"-->
-<!--                                th:text="${currentTask.status}"></span>-->
-<!--                            <span th:case="${TaskStatus.OVERDUE}" class="badge align-self-start bg-danger fs-6 py-2"-->
-<!--                                th:text="${currentTask.status}"></span>-->
-<!--                            <span th:case="${TaskStatus.DONE}" class="badge align-self-start bg-success fs-6 py-2"-->
-<!--                                  th:text="${currentTask.status}"></span>-->
-<!--                        </span>-->
-<!--                        <span th:switch="${currentTask.priority}">-->
-<!--                            <span th:case="${TaskPriority.MINOR}" class="badge align-self-start bg-secondary fs-6 py-2"-->
-<!--                                th:text="${TaskPriority.MINOR}"></span>-->
-<!--                            <span th:case="${TaskPriority.NORMAL}" class="badge align-self-start bg-info fs-6 py-2"-->
-<!--                                th:text="${TaskPriority.NORMAL}"></span>-->
-<!--                            <span th:case="${TaskPriority.CRITICAL}" class="badge align-self-start bg-warning fs-6 py-2"-->
-<!--                                th:text="${TaskPriority.CRITICAL}"></span>-->
-<!--                            <span th:case="${TaskPriority.URGENT}" class="badge align-self-start bg-danger fs-6 py-2"-->
-<!--                                th:text="${TaskPriority.URGENT}"></span>-->
-<!--                        </span>-->
-<!--                    </div>-->
                 </div>
 
                 <p class="card-text" th:text="${currentTask.description}">Task description...</p>

@@ -96,5 +96,23 @@ body {
             /* When no assignee */
             justify-content: flex-start;
         }
-
-
+.priority-badge {
+    font-size: 0.75rem;
+    padding: 0.35em 0.65em;
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+}
+.card-body {
+    position: relative; /* Needed for absolute positioning of badge */
+    padding-top: 1.5rem; /* Give space for badge */
+}
+.d-flex {
+    display: flex;
+}
+.justify-content-between {
+    justify-content: space-between;
+}
+.align-items-start {
+    align-items: flex-start;
+}

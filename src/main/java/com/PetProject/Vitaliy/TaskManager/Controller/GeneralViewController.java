@@ -58,7 +58,7 @@ public class GeneralViewController {
                 assignedTasks != null ? assignedTasks : Collections.emptyList());
         model.addAttribute("createdTasks",
                 createdTasks != null? createdTasks: Collections.emptyList());
-        model.addAttribute("priorityList", Priority.values());
+        model.addAttribute("priorityClass",Priority.class);
         return "tasks";
     }
 
@@ -86,6 +86,7 @@ public class GeneralViewController {
         List<Task> allTasks = taskService.eagerLoadAllTasksWithTheirUsers();
         model.addAttribute("allTasks",allTasks);
         model.addAttribute("TaskStatus", TaskStatus.class);
+        model.addAttribute("TaskPriority",Priority.class);
         model.addAttribute("currentUserId", securityContextService.getCurrentUser().getId());
         return "dashboard";
     }

@@ -82,4 +82,12 @@ public class RegistrationForm {
         this.confirmationPassword = confirmationPassword;
     }
 
+    @Override
+    public String toString() {
+        return "RegistrationForm{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
 }

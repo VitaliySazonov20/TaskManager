@@ -62,6 +62,7 @@
 
     </div>
 </div>
+
 <div class="modal fade" id="addUserModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -70,57 +71,46 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form th:object="${newUser}" th:action="@{/register}" method="post">
+                <form id="addUserForm" th:object="${newUser}" th:action="@{/register}" method="post">
 
                     <!--First Name-->
                     <div class="mb-3">
                         <label>First Name:</label>
-                        <input type="text" th:field="*{firstName}" class="form-control"
-                               th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid' : ''"
+                        <input type="text" th:field="*{firstName}" class="form-control" name = "firstName"
                                placeholder="First Name" required>
-                        <div th:if="${#fields.hasErrors('firstName')}" class="invalid-feedback">
-                            <span th:errors="*{firstName}"></span>
-                        </div>
+                        <div class="invalid-feedback" id="firstNameError"></div>
                     </div>
                     <!--Last Name-->
                     <div class="mb-3">
                         <label>Last Name:</label>
-                        <input type="text" th:field="*{lastName}" class="form-control"
+                        <input type="text" th:field="*{lastName}" class="form-control" name = "lastName"
                                placeholder="Last Name">
                     </div>
                     <!--Email-->
                     <div class="mb-3">
                         <label>Email:</label>
-                        <input type="email" th:field="*{email}" class="form-control"
-                               th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                        <input type="email" th:field="*{email}" class="form-control" name="email"
                                placeholder="Email@example.com" required>
-                        <div th:if="${#fields.hasErrors('email')}" class="invalid-feedback">
-                            <span th:errors="*{email}"></span>
-                        </div>
+                        <div class="invalid-feedback" id="emailError"></div>
                     </div>
                     <!--Password-->
                     <div class="mb-3">
                         <label>Password:</label>
-                        <input type="password" th:field="*{password}" class="form-control"
-                               th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
+                        <input type="password" th:field="*{password}" class="form-control" name="password"
                                placeholder="Password" required>
-                        <div th:if="${#fields.hasErrors('password')}" class="invalid-feedback">
-                            <span th:errors="*{password}"></span>
-                        </div>
+                        <div class="invalid-feedback" id="passwordError"></div>
                     </div>
                     <!--Confirmation Password-->
                     <div class="mb-3">
                         <label>Confirm Password:</label>
-                        <input type="password" th:field="*{confirmationPassword}" class="form-control"
-                               th:classappend="${#fields.hasErrors('confirmationPassword')} ? 'is-invalid' : ''"
+                        <input type="password" th:field="*{confirmationPassword}" class="form-control" name="confirmationPassword"
                                placeholder="Confirm Password" required>
-                        <div th:if="${#fields.hasErrors('passwordsMatch')}" class="invalid-feedback">
-                            <span th:errors="*{passwordsMatch}"></span>
-                        </div>
+                        <div class="invalid-feedback" id="confirmationPasswordError"></div>
                         <!--Register button-->
                         <div class="modal-footer">
-                        <button class="btn btn-primary" type="submit">Register</button>
+                            <button class="btn btn-primary" type="submit">Register</button>
                         </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -178,6 +168,7 @@
 
 <script th:src="@{/js/delete-user-modal.js}" defer></script>
 <script th:src="@{/js/edit-user-modal.js}" defer></script>
+<script th:src="@{/js/add-newUser-modal.js}" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

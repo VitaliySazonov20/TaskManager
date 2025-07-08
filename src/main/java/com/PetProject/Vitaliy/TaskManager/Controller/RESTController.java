@@ -3,6 +3,7 @@ package com.PetProject.Vitaliy.TaskManager.Controller;
 
 import com.PetProject.Vitaliy.TaskManager.Exception.UserNotFoundException;
 import com.PetProject.Vitaliy.TaskManager.Model.CommentModel;
+import com.PetProject.Vitaliy.TaskManager.Model.RegistrationForm;
 import com.PetProject.Vitaliy.TaskManager.Model.UserModel;
 import com.PetProject.Vitaliy.TaskManager.Service.*;
 import com.PetProject.Vitaliy.TaskManager.entity.Comment;
@@ -11,15 +12,18 @@ import com.PetProject.Vitaliy.TaskManager.entity.Enum.TaskStatus;
 import com.PetProject.Vitaliy.TaskManager.entity.Task;
 import com.PetProject.Vitaliy.TaskManager.entity.User;
 import com.PetProject.Vitaliy.TaskManager.entity.UserCredentials;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -126,5 +130,28 @@ public class RESTController {
         task.setPriority(priority);
         taskService.saveTask(task);
         return ResponseEntity.status(HttpStatus.OK).body("Status successfully changed");
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationForm registrationForm,
+                                          BindingResult result){
+        if(result.hasErrors()){
+//            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+//            System.out.println(result.toString());
+//            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+            Map<String,String> errors = new HashMap<>();
+            result.getFieldErrors().forEach(error->{
+                String field = error.getField().equals("passwordsMatch")
+                        ? "confirmationPassword":error.getField();
+                errors.put(field,error.getDefaultMessage());
+            });
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        if(userService.checkIfEmailExists(registrationForm.getEmail())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("email","Email already exists"));
+        }
+        userService.registerUser(registrationForm);
+        return ResponseEntity.status(HttpStatus.CREATED).body(registrationForm);
     }
 }

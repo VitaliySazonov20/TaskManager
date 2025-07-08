@@ -14,16 +14,6 @@
         <span th:case="${TaskStatus.DONE}" class="badge align-self-start bg-success fs-6 py-2"
               th:text="${currentTask.status}"></span>
     </span>
-<!--    <span th:switch="${currentTask.priority}">-->
-<!--        <span th:case="${TaskPriority.MINOR}" class="badge align-self-start bg-secondary fs-6 py-2"-->
-<!--              th:text="${TaskPriority.MINOR}"></span>-->
-<!--        <span th:case="${TaskPriority.NORMAL}" class="badge align-self-start bg-info fs-6 py-2"-->
-<!--              th:text="${TaskPriority.NORMAL}"></span>-->
-<!--        <span th:case="${TaskPriority.CRITICAL}" class="badge align-self-start bg-warning fs-6 py-2"-->
-<!--              th:text="${TaskPriority.CRITICAL}"></span>-->
-<!--        <span th:case="${TaskPriority.URGENT}" class="badge align-self-start bg-danger fs-6 py-2"-->
-<!--              th:text="${TaskPriority.URGENT}"></span>-->
-<!--    </span>-->
 
     <div class="dropdown d-inline-block">
         <span class="badge align-self-start fs-6 py-2 dropdown-toggle cursor-pointer"
