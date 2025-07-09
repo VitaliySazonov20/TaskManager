@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TaskService {
@@ -65,7 +66,13 @@ public class TaskService {
         taskRepo.deleteById(id);
     }
 
+    @Transactional
     public List<Task> eagerLoadAllTasksWithTheirUsers(){
         return taskRepo.findAllTasksWithUsers();
+    }
+
+    @Transactional
+    public Optional<Task> findLatestTaskByEmail(String email){
+        return taskRepo.findTopByCreatedByEmailOrderByIdDesc(email);
     }
 }

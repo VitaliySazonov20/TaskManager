@@ -70,7 +70,7 @@ public class RESTController {
     public ResponseEntity<?> editUser(@PathVariable String id){
         try{
             User user = userService.getUserById(BigInteger.valueOf(Long.parseLong(id)));
-            UserModel userModel = new UserModel(user.getFirstName(), user.getLastName(), user.getEmail());
+            UserModel userModel = new UserModel(user.getId(),user.getFirstName(), user.getLastName(), user.getEmail());
             return ResponseEntity.ok(userModel);
         } catch (UserNotFoundException e){
             return  ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -117,8 +117,7 @@ public class RESTController {
                         comment.getTask().getId(),
                         comment.getUser().getId(),
                         comment.getId(),
-                        comment.getText(),
-                        comment.getCreationTimestamp()
+                        comment.getText()
                 ));
     }
 
@@ -136,9 +135,6 @@ public class RESTController {
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationForm registrationForm,
                                           BindingResult result){
         if(result.hasErrors()){
-//            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-//            System.out.println(result.toString());
-//            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
             Map<String,String> errors = new HashMap<>();
             result.getFieldErrors().forEach(error->{
                 String field = error.getField().equals("passwordsMatch")

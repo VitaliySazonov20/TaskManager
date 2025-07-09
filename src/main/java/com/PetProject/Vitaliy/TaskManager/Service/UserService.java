@@ -68,4 +68,12 @@ public class UserService {
         }
         userRepo.deleteById(id);
     }
+
+    @Transactional
+    public User getUserByEmail(String email){
+        if(!userRepo.existsByEmail(email)){
+            throw new UserNotFoundException(email);
+        }
+        return userRepo.getByEmail(email);
+    }
 }

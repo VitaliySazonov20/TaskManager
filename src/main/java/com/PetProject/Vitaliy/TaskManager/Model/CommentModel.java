@@ -7,18 +7,18 @@ public class CommentModel {
     private BigInteger taskId;
     private BigInteger userId;
     private String msg;
-    private LocalDateTime creationTimestamp;
+//    private LocalDateTime creationTimestamp;
     private BigInteger commentId;
 
     public CommentModel() {
     }
 
-    public CommentModel(BigInteger taskId, BigInteger userId, BigInteger commentId, String msg, LocalDateTime creationTimestamp) {
+    public CommentModel(BigInteger taskId, BigInteger userId, BigInteger commentId, String msg) {
         this.taskId = taskId;
         this.userId = userId;
         this.commentId = commentId;
         this.msg = msg;
-        this.creationTimestamp = creationTimestamp;
+//        this.creationTimestamp = creationTimestamp;
     }
 
     public BigInteger getCommentId() {
@@ -53,11 +53,22 @@ public class CommentModel {
         this.msg = msg;
     }
 
-    public LocalDateTime getCreationTimestamp() {
-        return creationTimestamp;
-    }
+//    public LocalDateTime getCreationTimestamp() {
+//        return creationTimestamp;
+//    }
 
-    public void setCreationTimestamp(LocalDateTime creationTimestamp) {
-        this.creationTimestamp = creationTimestamp;
+//    public void setCreationTimestamp(LocalDateTime creationTimestamp) {
+//        this.creationTimestamp = creationTimestamp;
+//    }
+
+    @Override
+    public String toString() {
+        return "CommentModel{" +
+                "taskId=" + taskId +
+                ", userId=" + userId +
+                ", msg='" + msg + '\'' +
+//                ", creationTimestamp=" + creationTimestamp +
+                ", commentId=" + commentId +
+                '}';
     }
 }

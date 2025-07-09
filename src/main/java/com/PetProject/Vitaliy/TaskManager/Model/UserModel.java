@@ -1,5 +1,7 @@
 package com.PetProject.Vitaliy.TaskManager.Model;
 
+import com.PetProject.Vitaliy.TaskManager.entity.Enum.Role;
+
 import java.math.BigInteger;
 
 public class UserModel {
@@ -7,6 +9,7 @@ public class UserModel {
     private String firstName;
     private String lastName;
     private String email;
+    private Role role;
 
     public UserModel() {
     }
@@ -17,13 +20,6 @@ public class UserModel {
         this.lastName = lastName;
         this.email = email;
     }
-
-    public UserModel(String firstName, String lastName, String email) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-    }
-
     public BigInteger getId() {
         return id;
     }
@@ -54,6 +50,14 @@ public class UserModel {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     @Override

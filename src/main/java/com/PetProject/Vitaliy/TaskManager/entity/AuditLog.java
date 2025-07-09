@@ -1,9 +1,14 @@
 package com.PetProject.Vitaliy.TaskManager.entity;
 
+import com.PetProject.Vitaliy.TaskManager.JsonbConverter;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 @Table(name = "audit_log")
@@ -20,19 +25,25 @@ public class AuditLog {
     @Column(name = "action")
     private String action;
 
-    @Column(name = "details")
-    private String details;
+    @Column(name = "description")
+    private String description;
 
     @CreationTimestamp
     @Column(name = "timestamp")
     private LocalDateTime timestamp;
 
+    @Column(name="details", columnDefinition = "jsonb")
+    @Convert(converter = JsonbConverter.class)
+    @JdbcTypeCode(SqlTypes.JSON)
+    private Map<String, Object> details = new HashMap<>();
+
     public AuditLog() {
     }
 
-    public AuditLog(String username, String action, String details) {
+    public AuditLog(String username, String action, String description, Map<String,Object> details) {
         this.username = username;
         this.action = action;
+        this.description = description;
         this.details = details;
     }
 
@@ -60,12 +71,12 @@ public class AuditLog {
         this.action = action;
     }
 
-    public String getDetails() {
-        return details;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDetails(String details) {
-        this.details = details;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public LocalDateTime getTimestamp() {
@@ -74,5 +85,13 @@ public class AuditLog {
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public Map<String, Object> getDetails() {
+        return details;
+    }
+
+    public void setDetails(Map<String, Object> details) {
+        this.details = details;
     }
 }
