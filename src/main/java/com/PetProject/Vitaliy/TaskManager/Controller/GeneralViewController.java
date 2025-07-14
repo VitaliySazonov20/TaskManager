@@ -1,29 +1,36 @@
 package com.PetProject.Vitaliy.TaskManager.Controller;
 
-import com.PetProject.Vitaliy.TaskManager.Exception.UserNotFoundException;
 import com.PetProject.Vitaliy.TaskManager.Model.PasswordChange;
 import com.PetProject.Vitaliy.TaskManager.Model.RegistrationForm;
 import com.PetProject.Vitaliy.TaskManager.Model.TaskModel;
 import com.PetProject.Vitaliy.TaskManager.Model.UserModel;
 import com.PetProject.Vitaliy.TaskManager.Service.*;
+import com.PetProject.Vitaliy.TaskManager.entity.AuditLog;
 import com.PetProject.Vitaliy.TaskManager.entity.Comment;
 import com.PetProject.Vitaliy.TaskManager.entity.Enum.Priority;
 import com.PetProject.Vitaliy.TaskManager.entity.Enum.TaskStatus;
 import com.PetProject.Vitaliy.TaskManager.entity.Task;
 import com.PetProject.Vitaliy.TaskManager.entity.User;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigInteger;
-import java.security.Principal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,6 +52,9 @@ public class GeneralViewController {
 
     @Autowired
     private CommentService commentService;
+
+    @Autowired
+    private AuditLogService auditLogService;
 
     @GetMapping("/tasks")
     public String showAllTasks(Model model){
@@ -176,4 +186,31 @@ public class GeneralViewController {
         return "fragments/task-badge-container :: badge-container";
     }
 
+    @GetMapping("/logs")
+    public String getAllLogs(@RequestParam(defaultValue = "0") int page,
+                                     @RequestParam(defaultValue = "10") int size,
+                                     @RequestParam(required = false) String action,
+                                     @RequestParam(required = false) String username,
+                                     @RequestParam(required = false) LocalDateTime startDate,
+                                     @RequestParam(required = false) LocalDateTime endDate,
+                                     Model model) throws JsonProcessingException {
+
+        Pageable pageable = PageRequest.of(page,size, Sort.by("timestamp").descending());
+        Page<AuditLog> logs;
+
+        if(action !=null || username != null || startDate !=null || endDate !=null){
+            logs = auditLogService.getFilteredLogs(action,username,startDate,endDate,pageable);
+        }else {
+            logs = auditLogService.getAllLogs(pageable);
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        
+        String logsJson = mapper.writeValueAsString(logs.getContent());
+
+        model.addAttribute("logs", logs);
+        model.addAttribute("logsJson", logsJson);
+        return "audit-logs";
+    }
 }

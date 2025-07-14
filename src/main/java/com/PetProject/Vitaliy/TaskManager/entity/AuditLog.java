@@ -94,4 +94,15 @@ public class AuditLog {
     public void setDetails(Map<String, Object> details) {
         this.details = details;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "id:'" + id +'\''+
+                ", username:'" + username + '\'' +
+                ", action:'" + action + '\'' +
+                ", description:'" + description + '\'' +
+                ", timestamp:'" + timestamp + '\''+
+                '}';
+    }
 }

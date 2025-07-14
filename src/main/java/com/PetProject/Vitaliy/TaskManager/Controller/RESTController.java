@@ -6,23 +6,25 @@ import com.PetProject.Vitaliy.TaskManager.Model.CommentModel;
 import com.PetProject.Vitaliy.TaskManager.Model.RegistrationForm;
 import com.PetProject.Vitaliy.TaskManager.Model.UserModel;
 import com.PetProject.Vitaliy.TaskManager.Service.*;
-import com.PetProject.Vitaliy.TaskManager.entity.Comment;
+import com.PetProject.Vitaliy.TaskManager.entity.*;
 import com.PetProject.Vitaliy.TaskManager.entity.Enum.Priority;
-import com.PetProject.Vitaliy.TaskManager.entity.Enum.TaskStatus;
-import com.PetProject.Vitaliy.TaskManager.entity.Task;
-import com.PetProject.Vitaliy.TaskManager.entity.User;
-import com.PetProject.Vitaliy.TaskManager.entity.UserCredentials;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +48,9 @@ public class RESTController {
 
     @Autowired
     private CommentService commentService;
+
+    @Autowired
+    private LogExportService logExportService;
 
     @GetMapping("/users")
     public List<UserModel> getAllUserModels(){
@@ -149,5 +154,24 @@ public class RESTController {
         }
         userService.registerUser(registrationForm);
         return ResponseEntity.status(HttpStatus.CREATED).body(registrationForm);
+    }
+
+    @GetMapping(value = "/logs/export",produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<Resource> exportLogs(@RequestParam(required = false) String action,
+                                               @RequestParam(required = false) String username,
+                                               @RequestParam(required = false) LocalDateTime startDate,
+                                               @RequestParam(required = false) LocalDateTime endDate){
+
+        try {
+            Resource resource = logExportService.exportToJson(action,username,startDate,endDate);
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=audit-logs-"+ LocalDateTime.now()+ ".json")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .contentLength(resource.contentLength())
+                    .body(resource);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ByteArrayResource("Export failed".getBytes()));
+        }
     }
 }

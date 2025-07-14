@@ -4,7 +4,7 @@
 <!-- Navbar Fragment -->
 <nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{/}">Task Manager</a>
+        <a class="navbar-brand">Task Manager</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -20,6 +20,10 @@
 
                 <li class = "nav-item" sec:authorize="hasRole('ADMIN')">
                     <a class="nav-link" th:href="@{/users}" th:classappend = "'active'">Users</a>
+                </li>
+
+                <li class = "nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link" th:href="@{/logs}" th:classappend = "'active'">Audit Logs</a>
                 </li>
 
             </ul>
