@@ -8,7 +8,7 @@ document.getElementById('addUserForm').addEventListener('submit', async function
         confirmationPassword: document.querySelector('[name="confirmationPassword"]').value,
     }
     try {
-        const response = await fetch('/api/register',{
+        const response = await fetch('/api/auth/register',{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
