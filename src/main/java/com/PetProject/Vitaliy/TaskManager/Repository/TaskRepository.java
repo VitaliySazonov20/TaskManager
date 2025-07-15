@@ -24,6 +24,8 @@ public interface TaskRepository extends JpaRepository<Task, Long > {
     Task findById(BigInteger id);
     void deleteById(BigInteger id);
 
+    boolean existsById(BigInteger id);
+
     Optional<Task> findTopByCreatedByEmailOrderByIdDesc(String email);
 
 }

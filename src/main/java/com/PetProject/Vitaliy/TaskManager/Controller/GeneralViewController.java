@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.servlet.http.HttpServletRequest;
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -194,23 +195,32 @@ public class GeneralViewController {
                                      @RequestParam(required = false) LocalDateTime startDate,
                                      @RequestParam(required = false) LocalDateTime endDate,
                                      Model model) throws JsonProcessingException {
+        try {
+            Pageable pageable = PageRequest.of(page, size, Sort.by("timestamp").descending());
+            Page<AuditLog> logs;
 
-        Pageable pageable = PageRequest.of(page,size, Sort.by("timestamp").descending());
-        Page<AuditLog> logs;
+            if (action != null || username != null || startDate != null || endDate != null) {
+                logs = auditLogService.getFilteredLogs(action, username, startDate, endDate, pageable);
+            } else {
+                logs = auditLogService.getAllLogs(pageable);
+            }
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.registerModule(new JavaTimeModule());
+            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        if(action !=null || username != null || startDate !=null || endDate !=null){
-            logs = auditLogService.getFilteredLogs(action,username,startDate,endDate,pageable);
-        }else {
-            logs = auditLogService.getAllLogs(pageable);
+            String logsJson = mapper.writeValueAsString(logs.getContent());
+
+            model.addAttribute("logs", logs);
+            model.addAttribute("logsJson", logsJson);
+            return "audit-logs";
+        } catch (IllegalArgumentException e){
+            return "redirect:/logs";
+        } catch (JsonProcessingException e) {
+            return "redirect:/logs";
+        } catch (ServiceException e){
+            return "redirect:/logs";
+        } catch (Exception e){
+            return "redirect:/logs";
         }
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        
-        String logsJson = mapper.writeValueAsString(logs.getContent());
-
-        model.addAttribute("logs", logs);
-        model.addAttribute("logsJson", logsJson);
-        return "audit-logs";
     }
 }

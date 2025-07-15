@@ -39,7 +39,7 @@ document.getElementById('confirmChanges').addEventListener('click', async functi
 
     try {
         const response = await fetch(`/api/users/${userIdToEdit}`, {
-            method: 'PUT',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 [csrfHeader]: csrfToken

@@ -30,6 +30,10 @@ public class SecurityConfig{
                 .csrf(csrf-> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/register",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/webjars/**",
                                 "/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/users").hasRole("ADMIN")
                         .anyRequest().authenticated()

@@ -2,6 +2,15 @@ package com.PetProject.Vitaliy.TaskManager.Controller.REST;
 
 
 import com.PetProject.Vitaliy.TaskManager.Service.LogExportService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -17,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
+@Tag(name = "Audit Log management")
 @RestController
 @RequestMapping("/api/logs")
 public class AuditLogController {
@@ -24,14 +34,43 @@ public class AuditLogController {
     @Autowired
     private LogExportService logExportService;
 
+    @Operation(summary = "Returns JSON file of audit logs")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successful export - Returns JSON file",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(type = "string", format = "binary")
+            ),
+            headers = @Header(
+                    name = "Content-Disposition",
+                    description = "Contains filename for download",
+                    schema = @Schema(type = "string", example = "attachment; filename=audit-logs-2025-07-15T14:30:00.json")
+            )),
+
+            @ApiResponse(responseCode = "500", description = "Server error during export",
+            content = @Content(
+                    mediaType = "text/plain",
+                    examples = @ExampleObject("Export failed")
+
+            )),
+    })
     @GetMapping(value = "/export",produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<Resource> exportLogs(@RequestParam(required = false) String action,
-                                               @RequestParam(required = false) String username,
-                                               @RequestParam(required = false) LocalDateTime startDate,
-                                               @RequestParam(required = false) LocalDateTime endDate){
+    public ResponseEntity<Resource> exportLogs(
+            @Parameter(name = "Action",description = "Action type filter", example = "LOGIN")
+            @RequestParam(required = false) String action,
+            @Parameter(name = "Username",description = "Username filter", example = "Email@email.com")
+            @RequestParam(required = false) String username,
+            @Parameter(name = "Starting date",description = "Start date filter", example = "2025-07-01T00:00")
+            @RequestParam(required = false) LocalDateTime startDate,
+            @Parameter(name = "Ending date",description = "End date filter", example = "2025-07-01T23:59")
+            @RequestParam(required = false) LocalDateTime endDate){
 
         try {
             Resource resource = logExportService.exportToJson(action,username,startDate,endDate);
+            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+            System.out.println(startDate);
+            System.out.println(endDate);
+            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
             return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
                             "attachment; filename=audit-logs-"+ LocalDateTime.now()+ ".json")
                     .contentType(MediaType.APPLICATION_JSON)

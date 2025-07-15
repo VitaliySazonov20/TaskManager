@@ -11,6 +11,7 @@ public class TaskModel {
     private LocalDateTime dueDate;
     private BigInteger userId;
     private Priority priority;
+    private BigInteger createdByUserId;
 
 
     public TaskModel(String title, String description, LocalDateTime dueDate) {
@@ -60,5 +61,13 @@ public class TaskModel {
 
     public void setDueDate(LocalDateTime dueDate) {
         this.dueDate = dueDate;
+    }
+
+    public BigInteger getCreatedByUserId() {
+        return createdByUserId;
+    }
+
+    public void setCreatedByUserId(BigInteger createdByUserId) {
+        this.createdByUserId = createdByUserId;
     }
 }

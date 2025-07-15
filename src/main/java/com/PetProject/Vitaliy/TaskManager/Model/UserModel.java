@@ -14,11 +14,12 @@ public class UserModel {
     public UserModel() {
     }
 
-    public UserModel(BigInteger id, String firstName, String lastName, String email) {
+    public UserModel(BigInteger id, String firstName, String lastName, String email, Role role) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.role = role;
     }
     public BigInteger getId() {
         return id;
