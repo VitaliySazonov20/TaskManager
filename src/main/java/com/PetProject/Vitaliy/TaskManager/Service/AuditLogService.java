@@ -4,7 +4,8 @@ import com.PetProject.Vitaliy.TaskManager.Repository.AuditLogRepository;
 import com.PetProject.Vitaliy.TaskManager.Repository.TaskRepository;
 import com.PetProject.Vitaliy.TaskManager.entity.AuditLog;
 import com.PetProject.Vitaliy.TaskManager.entity.Task;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
+
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;

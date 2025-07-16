@@ -213,12 +213,12 @@ public class GeneralViewController {
             model.addAttribute("logs", logs);
             model.addAttribute("logsJson", logsJson);
             return "audit-logs";
-        } catch (IllegalArgumentException e){
-            return "redirect:/logs";
-        } catch (JsonProcessingException e) {
-            return "redirect:/logs";
-        } catch (ServiceException e){
-            return "redirect:/logs";
+//        } catch (IllegalArgumentException e){
+//            return "redirect:/logs";
+//        } catch (JsonProcessingException e) {
+//            return "redirect:/logs";
+//        } catch (ServiceException e){
+//            return "redirect:/logs";
         } catch (Exception e){
             return "redirect:/logs";
         }

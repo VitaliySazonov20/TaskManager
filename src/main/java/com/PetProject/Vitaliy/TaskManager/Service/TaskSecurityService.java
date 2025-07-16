@@ -20,20 +20,39 @@ public class TaskSecurityService {
     private SecurityContextService securityContextService;
 
     public boolean isCreator(BigInteger taskId){
-        User user = securityContextService.getCurrentUser();
-        Task task = taskRepository.findById(taskId);
-        return task.getCreatedBy().getEmail().equals(user.getEmail());
+        try {
+            User user = securityContextService.getCurrentUser();
+            Task task = taskRepository.findById(taskId);
+            if(task.getCreatedBy() == null || user.getEmail() == null){
+                return false;
+            }
+            return task.getCreatedBy().getEmail().equals(user.getEmail());
+        } catch (Exception e){
+            return false;
+        }
     }
 
     public boolean isAssignee(BigInteger taskId){
-        User user = securityContextService.getCurrentUser();
-        Task task = taskRepository.findById(taskId);
-        return (task.getAssignedTo() !=null) && task.getAssignedTo().getEmail().equals(user.getEmail());
+
+        try {
+            User user = securityContextService.getCurrentUser();
+            Task task = taskRepository.findById(taskId);
+            return (task.getAssignedTo() != null)
+                    && user.getEmail() !=null
+                    && task.getAssignedTo().getEmail() != null
+                    && task.getAssignedTo().getEmail().equalsIgnoreCase(user.getEmail());
+        } catch (Exception e){
+            return false;
+        }
     }
 
     public boolean assigneeIsNull(BigInteger taskId){
-        Task task = taskRepository.findById(taskId);
-        return task.getAssignedTo() == null;
+        try{
+            Task task = taskRepository.findById(taskId);
+            return task.getAssignedTo() == null;
+        } catch (Exception e){
+            return false;
+        }
     }
 
 }

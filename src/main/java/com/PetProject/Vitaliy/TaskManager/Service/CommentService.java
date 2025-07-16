@@ -3,7 +3,8 @@ package com.PetProject.Vitaliy.TaskManager.Service;
 import com.PetProject.Vitaliy.TaskManager.Repository.CommentRepository;
 import com.PetProject.Vitaliy.TaskManager.Repository.TaskRepository;
 import com.PetProject.Vitaliy.TaskManager.entity.Comment;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
+
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
