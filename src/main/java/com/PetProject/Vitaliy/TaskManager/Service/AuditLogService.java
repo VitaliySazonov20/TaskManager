@@ -1,9 +1,12 @@
 package com.PetProject.Vitaliy.TaskManager.Service;
 
+import com.PetProject.Vitaliy.TaskManager.Aspect.AuditLogAspect;
 import com.PetProject.Vitaliy.TaskManager.Repository.AuditLogRepository;
 import com.PetProject.Vitaliy.TaskManager.Repository.TaskRepository;
 import com.PetProject.Vitaliy.TaskManager.entity.AuditLog;
 import com.PetProject.Vitaliy.TaskManager.entity.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.hibernate.service.spi.ServiceException;
@@ -29,31 +32,33 @@ public class AuditLogService {
     @Autowired
     private TaskRepository taskRepository;
 
+    private static final Logger log = LoggerFactory.getLogger(AuditLogService.class);
+
 
     public void save(AuditLog log){
         auditLogRepository.save(log);
     }
 
+    @Transactional(readOnly = true)
     public Optional<Task> getLatestTaskByUserEmail(String email){
-        Objects.requireNonNull(email, "Email cannot be null");
-        try {
             return taskRepository.findTopByCreatedByEmailOrderByIdDesc(email);
-        }  catch (DataAccessException e){
-            throw new DataAccessException("Failed to retrieve task. Please try again later"){};
-        }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<AuditLog> getAllLogs(Pageable pageable){
         Objects.requireNonNull(pageable, "Pageable parameter must not be null");
         try {
             return auditLogRepository.findAllPaginated(pageable);
         } catch (DataAccessException e){
+            log.error("Database error while fetching audit logs", e);
             throw new ServiceException("Failed to retrieve audit logs",e);
+        } catch (IllegalArgumentException e){
+            log.warn("Invalid pagination parameters: {}",pageable);
+            throw new ServiceException("Invalid pagination request", e);
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = true,rollbackFor = Exception.class)
     public Page<AuditLog> getFilteredLogs(String action,
                                           String username,
                                           LocalDateTime startDate,
@@ -63,15 +68,15 @@ public class AuditLogService {
         action = StringUtils.hasText(action)? action : null;
         username = StringUtils.hasText(username)? username : null;
         Objects.requireNonNull(pageable,"Pageable parameter must not be null");
-        if(startDate !=null && endDate != null && startDate.isAfter(endDate)){
-            throw new IllegalArgumentException("Start date cannot be after end date");
-        }
+
+//        if(startDate !=null && endDate != null && startDate.isAfter(endDate)){
+//            throw new ServiceException("Start date cannot be after end date");
+//        }
         try {
             return auditLogRepository.findFiltered(action, username, startDate, endDate, pageable);
         } catch (DataAccessException e){
+            log.error("Database error while fetching filtered logs",e);
             throw new ServiceException("Failed to retrieve filtered audit logs", e);
-        } catch (IllegalArgumentException e){
-            throw new ServiceException("Invalid filter parameters: "+ e.getMessage(),e);
         }
     }
 

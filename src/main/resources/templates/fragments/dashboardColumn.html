@@ -15,9 +15,9 @@
                     <div class="card-body" th:data-task-id="${task.id}" onclick="openTask(this)">
                         <h6 th:text="${task.title}"></h6>
                         <span th:text="${task.priority?.name()}"
-                              th:classappend = "${task.priority == TaskPriority.MINOR}? 'bg-secondary':
-                              (${task.priority == TaskPriority.NORMAL}? 'bg-info':
-                              (${task.priority == TaskPriority.CRITICAL}? 'bg-warning': 'bg-danger'))"
+                              th:classappend = "${task.priority == taskPriority.MINOR}? 'bg-secondary':
+                              (${task.priority == taskPriority.NORMAL}? 'bg-info':
+                              (${task.priority == taskPriority.CRITICAL}? 'bg-warning': 'bg-danger'))"
                         class="badge rounded-pill priority-badge">
 
 

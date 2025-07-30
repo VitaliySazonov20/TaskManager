@@ -24,23 +24,23 @@
 <div class="row g-3">
     <!-- To Do Column -->
     <div class="col-md-3">
-        <div th:replace="~{fragments/dashboardColumn :: task-column('To Do', ${TaskStatus.TODO}, 'info')}"></div>
+        <div th:replace="~{fragments/dashboardColumn :: task-column('To Do', ${taskStatus.TODO}, 'info')}"></div>
     </div>
     <!-- Backlog Column -->
     <div class="col-md-3">
-        <div th:replace="~{fragments/dashboardColumn :: task-column('Backlog', ${TaskStatus.BACKLOG}, 'secondary')}"></div>
+        <div th:replace="~{fragments/dashboardColumn :: task-column('Backlog', ${taskStatus.BACKLOG}, 'secondary')}"></div>
     </div>
     <!-- In Progress Column -->
     <div class="col-md-3">
-        <div th:replace="~{fragments/dashboardColumn :: task-column('In Progress', ${TaskStatus.IN_PROGRESS}, 'warning')}"></div>
+        <div th:replace="~{fragments/dashboardColumn :: task-column('In Progress', ${taskStatus.IN_PROGRESS}, 'warning')}"></div>
     </div>
     <!-- Overdue Column -->
     <div class="col-md-3">
-        <div th:replace="~{fragments/dashboardColumn :: task-column('Overdue', ${TaskStatus.OVERDUE}, 'danger')}"></div>
+        <div th:replace="~{fragments/dashboardColumn :: task-column('Overdue', ${taskStatus.OVERDUE}, 'danger')}"></div>
     </div>
     <!-- Done Column -->
     <div class="col-md-3">
-        <div th:replace="~{fragments/dashboardColumn :: task-column('Done', ${TaskStatus.DONE}, 'success')}"></div>
+        <div th:replace="~{fragments/dashboardColumn :: task-column('Done', ${taskStatus.DONE}, 'success')}"></div>
     </div>
 </div>
 </div>

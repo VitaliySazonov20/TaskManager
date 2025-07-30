@@ -90,13 +90,13 @@
 
             <!-- Action Buttons -->
             <div class="mt-4 d-flex gap-2">
-                <form th:if="${(currentTask.status == TaskStatus.TODO || currentTask.status == TaskStatus.BACKLOG) && (currentTask.assignedTo == null || currentTask.assignedTo.id == currentUserId)}"
+                <form th:if="${(currentTask.status == taskStatus.TODO || currentTask.status == taskStatus.BACKLOG) && (currentTask.assignedTo == null || currentTask.assignedTo.id == currentUserId)}"
                       th:action="@{'/tasks/' + ${currentTask.id} + '/accept'}" method="post">
                     <button type="submit" th:text="Accept" class="btn btn-success px-4 py-2">
                         <i class="bi bi-check-circle me-2"></i> Accept Task
                     </button>
                 </form>
-                <form th:if="${(currentTask.status == TaskStatus.IN_PROGRESS || currentTask.status == TaskStatus.OVERDUE)&& currentTask.assignedTo.id == currentUserId }"
+                <form th:if="${(currentTask.status == taskStatus.IN_PROGRESS || currentTask.status == taskStatus.OVERDUE)&& currentTask.assignedTo.id == currentUserId }"
                       th:action="@{'/tasks/' + ${currentTask.id} + '/complete'}" method="post">
                     <button type="submit" th:text="Complete" class="btn btn-primary px-4 py-2">
                         <i class="bi bi-check-square me-2"></i> Complete Task

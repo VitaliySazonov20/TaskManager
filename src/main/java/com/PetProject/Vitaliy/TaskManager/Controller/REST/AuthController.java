@@ -37,22 +37,27 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegistrationForm registrationForm,
                                           BindingResult result){
-        if(result.hasErrors()){
-            Map<String,String> errors = new HashMap<>();
-            result.getFieldErrors().forEach(error->{
-                String field = error.getField().equals("passwordsMatch")
-                        ? "confirmationPassword":error.getField();
-                errors.put(field,error.getDefaultMessage());
-            });
-            return ResponseEntity.badRequest().body(errors);
-        }
+        try{
+            if (result.hasErrors()) {
+                Map<String, String> errors = new HashMap<>();
+                result.getFieldErrors().forEach(error -> {
+                    String field = error.getField().equals("passwordsMatch")
+                            ? "confirmationPassword" : error.getField();
+                    errors.put(field, error.getDefaultMessage());
+                });
+                return ResponseEntity.badRequest().body(errors);
+            }
 
-        if(userService.checkIfEmailExists(registrationForm.getEmail())){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(
-                    Map.of("email","Email already exists"));
+            if (userService.checkIfEmailExists(registrationForm.getEmail())) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                        Map.of("email", "Email already exists"));
+            }
+            userService.registerUser(registrationForm);
+            return ResponseEntity.status(HttpStatus.CREATED).body(
+                    registrationForm);
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message","Registration failed. Please try again."));
         }
-        userService.registerUser(registrationForm);
-        return ResponseEntity.status(HttpStatus.CREATED).body(
-                registrationForm);
     }
 }

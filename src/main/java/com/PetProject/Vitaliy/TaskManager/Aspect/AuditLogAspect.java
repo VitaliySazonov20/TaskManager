@@ -18,7 +18,10 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
@@ -26,10 +29,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Aspect
 @Component
@@ -47,6 +47,8 @@ public class AuditLogAspect {
     @Autowired
     private UserService userService;
 
+    private static final Logger log = LoggerFactory.getLogger(AuditLogAspect.class);
+
     @Pointcut("execution(* com.PetProject.Vitaliy.TaskManager.Controller.AuthenticationController.registerUser(com.PetProject.Vitaliy.TaskManager.Model.RegistrationForm,..)) && " +
             "@annotation(org.springframework.web.bind.annotation.PostMapping) && " +
             "args(@org.springframework.web.bind.annotation.ModelAttribute('registrationForm') registrationForm, ..)")
@@ -60,46 +62,37 @@ public class AuditLogAspect {
     @AfterReturning(
             pointcut = "execution(* com.PetProject.Vitaliy.TaskManager.Controller.GeneralViewController.addATask(..))")
     public void afterTaskCreated() {
-        User currentUser = securityContextService.getCurrentUser();
-        String email = currentUser.getEmail();
-        Task savedTask = null;
-        if (auditLogService.getLatestTaskByUserEmail(email).isPresent()) {
-            savedTask = auditLogService.getLatestTaskByUserEmail(email).get();
-        }
-        AuditLog log = null;
-        UserModel user = userToUserModel(currentUser);
-//        user.setFirstName(currentUser.getFirstName());
-//        user.setLastName(currentUser.getLastName());
-//        user.setEmail(currentUser.getEmail());
-//        user.setId(currentUser.getId());
-//        user.setRole(currentUser.getUserCredentials().getRole());
-        assert savedTask != null;
-        TaskModel task = taskToTaskModel(savedTask);
-//
-//        task.setTitle(savedTask.getTitle());
-//        task.setDescription(savedTask.getDescription());
-//        task.setDueDate(savedTask.getDueDate());
-//        task.setPriority(savedTask.getPriority());
+        try{
+            User currentUser = securityContextService.getCurrentUser();
+            String email = currentUser.getEmail();
+            Task savedTask = auditLogService.getLatestTaskByUserEmail(email).orElseThrow(
+                    ()-> new NoSuchElementException("No Task found after creation for user: "+ email));
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("User", user);
-        map.put("Task", task);
+            UserModel user = userToUserModel(currentUser);
+            TaskModel task = taskToTaskModel(savedTask);
 
-        if (savedTask != null) {
-            log = new AuditLog(
+            Map<String, Object> map = Map.of(
+                    "User", user,
+                    "Task", task
+            );
+
+            AuditLog log = new AuditLog(
                     email,
                     "TASK_CREATED",
                     email + " created the task \"" + savedTask.getTitle() + "\"",
                     map
             );
 
-        } else {
-            log = new AuditLog(email,
+            auditLogService.save(log);
+        } catch (Exception e){
+            log.error("Failed to create audit log",e);
+            auditLogService.save(new AuditLog(
+                    securityContextService.getCurrentUser().getEmail(),
                     "TASK_CREATE_FAIL",
-                    email + " failed to create a task",
-                    map);
+                    "System failed to log task creation",
+                    Map.of("error", e.getMessage())
+            ));
         }
-        auditLogService.save(log);
     }
 
     @AfterReturning(

@@ -67,11 +67,8 @@ public class AuditLogController {
 
         try {
             Resource resource = logExportService.exportToJson(action,username,startDate,endDate);
-            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-            System.out.println(startDate);
-            System.out.println(endDate);
-            System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-            return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
+            return ResponseEntity.ok().
+                    header(HttpHeaders.CONTENT_DISPOSITION,
                             "attachment; filename=audit-logs-"+ LocalDateTime.now()+ ".json")
                     .contentType(MediaType.APPLICATION_JSON)
                     .contentLength(resource.contentLength())

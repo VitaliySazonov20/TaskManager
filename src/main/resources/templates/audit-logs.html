@@ -21,6 +21,11 @@
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 <div class="container mt-4">
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    <span th:text="${error}">Error message appears here</span>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
     <h1> Audit Logs</h1>
     <div class="mb-3">
         <button id="exportLogsBtn" class="btn btn-success">
@@ -43,12 +48,14 @@
 
             <div class="col-md-2">
                 <input type="datetime-local" name="startDate" th:value="${param.startDate}"
-                       class="form-control">
+                       class="form-control" id = "startDate"
+                       onchange="document.getElementById('endDate').min = this.value;">
             </div>
 
             <div class="col-md-2">
                 <input type="datetime-local" name="endDate" th:value="${param.endDate}"
-                       class="form-control">
+                       class="form-control" id = "endDate"
+                       onchange="document.getElementById('startDate').max = this.value;">
             </div>
 
             <div class="col-md-2">

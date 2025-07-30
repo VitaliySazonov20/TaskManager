@@ -21,7 +21,7 @@ public interface TaskRepository extends JpaRepository<Task, Long > {
     List<Task> findAllTasksWithUsers();
 
     List<Task> findByStatusNotAndDueDateBefore(TaskStatus status, LocalDateTime now);
-    Task findById(BigInteger id);
+    Optional<Task> findById(BigInteger id);
     void deleteById(BigInteger id);
 
     boolean existsById(BigInteger id);
