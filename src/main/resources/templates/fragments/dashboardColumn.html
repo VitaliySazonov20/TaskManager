@@ -31,10 +31,10 @@
                                   th:text="'Task is unassigned'"
                                   class="assignee-text"></span>
                             <div class="button-container">
-                                <form th:if ="${(task.status == TaskStatus.TODO || task.status == TaskStatus.BACKLOG) && (task.assignedTo == null || task.assignedTo.id == currentUserId)}" th:action="@{'/tasks/' + ${task.id} + '/accept'}" method="post">
+                                <form th:if ="${(task.status == taskStatus.TODO || task.status == taskStatus.BACKLOG) && (task.assignedTo == null || task.assignedTo.id == currentUserId)}" th:action="@{'/tasks/' + ${task.id} + '/accept'}" method="post">
                                     <button type="submit" th:text="Accept" class="btn-accept"></button>
                                 </form>
-                                <form th:if ="${(task.status == TaskStatus.IN_PROGRESS || task.status == TaskStatus.OVERDUE)&& task.assignedTo.id == currentUserId }" th:action="@{'/tasks/' + ${task.id} + '/complete'}" method="post">
+                                <form th:if ="${(task.status == taskStatus.IN_PROGRESS || task.status == taskStatus.OVERDUE)&& (task.assignedTo == null ||task.assignedTo.id == currentUserId) }" th:action="@{'/tasks/' + ${task.id} + '/complete'}" method="post">
                                     <button type="submit" th:text="Complete" class="btn-complete"></button>
                                 </form>
                             </div>

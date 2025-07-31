@@ -60,6 +60,11 @@ public class GeneralViewController {
 
     private static final Logger log = LoggerFactory.getLogger(GeneralViewController.class);
 
+    @GetMapping("/")
+    public String showMainPage(){
+        return "main";
+    }
+
     @GetMapping("/tasks")
     public String showAllTasks(Model model) {
         try {
