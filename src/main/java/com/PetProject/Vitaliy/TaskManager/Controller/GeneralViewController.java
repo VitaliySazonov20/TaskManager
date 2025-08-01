@@ -187,6 +187,7 @@ public class GeneralViewController {
                 model.addAttribute("permissionDenied", true);
                 model.addAttribute("allTasks", allTasks);
                 model.addAttribute("taskStatus", TaskStatus.class);
+                model.addAttribute("taskPriority", Priority.class);
                 model.addAttribute("currentUserId", securityContextService.getCurrentUser().getId());
                 return "dashboard";
             }

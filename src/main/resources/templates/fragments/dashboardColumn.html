@@ -3,33 +3,49 @@
 <body>
 <!-- Column Fragment -->
 <div th:fragment="task-column(title, status, color)">
-
-        <div th:classappend="'column-header bg-' + ${color}" class="p-2 rounded-top">
-            <h5 class="m-0" th:text="${title}"></h5>
+    <div class="card border-0 shadow-sm mb-4">  <!-- Wrapped in card -->
+        <div th:classappend="'bg-' + ${color}" class="card-header py-2">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="m-0" th:text="${title}"></h5>
+            </div>
         </div>
+    </div>
         <div class="column-body border p-3 rounded-bottom" style="min-height: 70vh; overflow-y: auto;">
             <div th:each="task : ${allTasks}"
                  th:if="${task.status == status}">
                 <!-- Reusable task card -->
                 <div class="card mb-3">
                     <div class="card-body" th:data-task-id="${task.id}" onclick="openTask(this)">
-                        <h6 th:text="${task.title}"></h6>
+
+                        <!-- Priority badge -->
                         <span th:text="${task.priority?.name()}"
                               th:classappend = "${task.priority == taskPriority.MINOR}? 'bg-secondary':
                               (${task.priority == taskPriority.NORMAL}? 'bg-info':
                               (${task.priority == taskPriority.CRITICAL}? 'bg-warning': 'bg-danger'))"
-                        class="badge rounded-pill priority-badge">
-
-
+                              class="badge rounded-pill priority-badge">
                         </span>
+                        <!-- Title -->
+                        <h6 class="card-title mb-2" th:text="${task.title}"></h6>
+
 
                         <div class="assignee-row">
+<!--                            <span th:if="${task.assignedTo != null}"-->
+<!--                                th:text="${task.assignedTo.firstName +' '+ task.assignedTo.lastName}"-->
+<!--                                class="assignee-text"></span>-->
+<!--                            <span th:unless="${task.assignedTo != null}"-->
+<!--                                  th:text="'Task is unassigned'"-->
+<!--                                  class="assignee-text"></span>-->
+
                             <span th:if="${task.assignedTo != null}"
-                                th:text="${task.assignedTo.firstName +' '+ task.assignedTo.lastName}"
-                                class="assignee-text"></span>
+                                  class="assignee-text d-flex align-items-center">
+                                <i class="bi bi-person-circle me-1"></i>
+                                <span th:text="${task.assignedTo.firstName + ' ' + task.assignedTo.lastName}"></span>
+                            </span>
                             <span th:unless="${task.assignedTo != null}"
-                                  th:text="'Task is unassigned'"
-                                  class="assignee-text"></span>
+                                  class="assignee-text text-muted">
+                                <i class="bi bi-person-x me-1"></i>Unassigned
+                            </span>
+
                             <div class="button-container">
                                 <form th:if ="${(task.status == taskStatus.TODO || task.status == taskStatus.BACKLOG) && (task.assignedTo == null || task.assignedTo.id == currentUserId)}" th:action="@{'/tasks/' + ${task.id} + '/accept'}" method="post">
                                     <button type="submit" th:text="Accept" class="btn-accept"></button>
@@ -40,10 +56,31 @@
                             </div>
                         </div>
 
-                        <p class="card-text" th:text="${task.description}"></p>
-                        <small class="text-muted"
-                            th:text="${task.dueDate != null} ? ${#temporals.format(task.dueDate, 'MMM dd')}: 'No due date'">
-                        </small>
+<!--                        <p class="card-text" th:text="${task.description}"></p>-->
+
+                        <div th:if="${task.description}" class="card-text text-muted mb-2"
+                             style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                            <i class="bi bi-card-text me-1"></i>
+                            <span th:text="${task.description}"></span>
+                        </div>
+
+<!--                        <small class="text-muted"-->
+<!--                            th:text="${task.dueDate != null} ? ${#temporals.format(task.dueDate, 'MMM dd')}: 'No due date'">-->
+<!--                        </small>-->
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <small class="text-muted" th:if="${task.dueDate != null}">
+                                <i class="bi bi-calendar-event me-1"></i>
+                                <span th:text="${#temporals.format(task.dueDate, 'MMM dd')}"></span>
+                            </small>
+                            <small th:unless="${task.dueDate != null}" class="text-muted">
+                                <i class="bi bi-calendar-x me-1"></i>No due date
+                            </small>
+<!--                            <span th:if="${task.comments != null and !task.comments.empty}"-->
+<!--                                  class="badge bg-light text-dark">-->
+<!--                                <i class="bi bi-chat-left-text me-1"></i>-->
+<!--                                <span th:text="${task.comments.size()}"></span>-->
+<!--                            </span>-->
+                        </div>
                     </div>
                 </div>
             </div>

@@ -1,11 +1,42 @@
+:root {
+            --primary-gradient: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+.task-card {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+}
+
 .task-header {
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
     padding-bottom: 1rem;
     margin-bottom: 1.5rem;
 }
 .metadata-card {
     background-color: #f8f9fa;
     border-radius: 0.5rem;
+}
+.metadata-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+}
+
+.action-btn {
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 0.5rem 1.5rem;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.2s;
+}
+.action-btn i {
+            margin-right: 8px;
 }
 @keyframes pulse {
     0% { opacity: 1; }
@@ -19,17 +50,30 @@
 .comments-container {
      max-height: 500px;
      overflow-y: auto;
+     scroll-behavior: smooth;
      padding-right: 10px;
      margin-bottom: 1.5rem;
      border-bottom: 1px solid #eee;
 }
 
 .comment-card {
-     background-color: #f8f9fa;
-     border-radius: 8px;
-     padding: 1rem;
-     margin-bottom: 1rem;
-     border-left: 3px solid #0d6efd;
+    background-color: white;
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    border-left: 4px solid var(--bs-primary);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    transition: all 0.2s;
+}
+.comment-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.comment-form {
+    background-color: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 10px;
 }
 .comment-header {
      display: flex;
@@ -52,4 +96,23 @@
 #comment-text {
       min-height: 100px;
       resize: vertical;
+}
+
+#badge-container .badge {
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    padding: 0.5em 0.8em;
+}
+
+.dropdown-menu {
+    border-radius: 8px;
+    padding: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.dropdown-item {
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    margin: 0.1rem 0;
+    font-weight: 500;
 }

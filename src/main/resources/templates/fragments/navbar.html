@@ -4,7 +4,16 @@
 <!-- Navbar Fragment -->
 <nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{/}">Task Manager</a>
+<!--        <a class="navbar-brand" th:href="@{/}">Task Manager</a>-->
+<!--        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">-->
+<!--            <span class="navbar-toggler-icon"></span>-->
+<!--        </button>-->
+
+        <a class="navbar-brand d-flex align-items-center" th:href="@{/}">
+            <i class="bi bi-kanban me-2"></i>
+            <span>Task Manager</span>
+        </a>
+
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -12,25 +21,55 @@
         <div class="collapse navbar-collapse" id="navbarContent">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" th:href="@{/tasks}" th:classappend="'active'">Tasks</a>
+<!--                    <a class="nav-link" th:href="@{/tasks}" th:classappend="'active'">Tasks</a>-->
+                    <a class="nav-link d-flex align-items-center" th:href="@{/tasks}" th:classappend="'active'">
+                        <i class="bi bi-list-task me-1"></i>
+                        <span>Tasks</span>
+                    </a>
                 </li>
                 <li class = "nav-item">
-                    <a class="nav-link" th:href="@{/dashboard}" th:classappend = "'active'">Dashboard</a>
+<!--                    <a class="nav-link" th:href="@{/dashboard}" th:classappend = "'active'">Dashboard</a>-->
+                    <a class="nav-link d-flex align-items-center" th:href="@{/dashboard}" th:classappend="'active'">
+                        <i class="bi bi-kanban me-1"></i>
+                        <span>Dashboard</span>
+                    </a>
                 </li>
 
                 <li class = "nav-item" sec:authorize="hasRole('ADMIN')">
-                    <a class="nav-link" th:href="@{/users}" th:classappend = "'active'">Users</a>
+<!--                    <a class="nav-link" th:href="@{/users}" th:classappend = "'active'">Users</a>-->
+
+                    <a class="nav-link d-flex align-items-center" th:href="@{/users}" th:classappend="'active'">
+                        <i class="bi bi-people me-1"></i>
+                        <span>Users</span>
+                    </a>
                 </li>
 
                 <li class = "nav-item" sec:authorize="hasRole('ADMIN')">
-                    <a class="nav-link" th:href="@{/logs}" th:classappend = "'active'">Audit Logs</a>
+<!--                    <a class="nav-link" th:href="@{/logs}" th:classappend = "'active'">Audit Logs</a>-->
+                    <a class="nav-link d-flex align-items-center" th:href="@{/logs}" th:classappend="'active'">
+                        <i class="bi bi-journal-text me-1"></i>
+                        <span>Audit Logs</span>
+                    </a>
                 </li>
 
             </ul>
-            <div class="d-flex">
-                <a class="navbar-text me-3" th:text="${#authentication.name}" th:href = "@{/user}">User</a>
+<!--            <div class="d-flex">-->
+<!--                <a class="navbar-text me-3" th:text="${#authentication.name}" th:href = "@{/user}">User</a>-->
+<!--                <form th:action="@{/logout}" method="post">-->
+<!--                    <button class="btn btn-outline-light" type="submit">Logout</button>-->
+<!--                </form>-->
+<!--            </div>-->
+
+            <div class="d-flex align-items-center">
+                <a class="nav-link me-3 d-flex align-items-center" th:href="@{/user}">
+                    <i class="bi bi-person-circle me-2"></i>
+                    <span th:text="${#authentication.name}"></span>
+                </a>
                 <form th:action="@{/logout}" method="post">
-                    <button class="btn btn-outline-light" type="submit">Logout</button>
+                    <button class="btn btn-sm btn-outline-light d-flex align-items-center" type="submit">
+                        <i class="bi bi-box-arrow-right me-1"></i>
+                        <span>Logout</span>
+                    </button>
                 </form>
             </div>
         </div>

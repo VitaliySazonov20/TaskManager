@@ -10,112 +10,183 @@
 </head>
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
-<div class="container">
-<div class="task-section">
-    <h2 class="task-header">
-        <i class="bi bi-list-task me-2"></i>Tasks Assigned To You
-    </h2>
-    <div class="table-responsive">
-        <table class="task-table table table-hover">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>Task Title</th>
-                <th>Description</th>
-                <th>Status</th>
-                <th>Priority</th>
-                <th>Creation Date</th>
-                <th>Due Date</th>
-                <th>Last Updated</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="task, status : ${assignedTasks}">
-                <td th:text="${status.count}"></td>
-                <td th:text="${task.title}" th:data-task-id="${task.id}" onclick="openTask(this)"></td>
-                <td th:text="${task.description}"></td>
-                <td>
+<div class="container py-4">
+    <div class="task-section mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4 section-header">
+            <h2 class="task-header m-0">
+                <i class="bi bi-list-task me-2"></i>Your Assigned Tasks
+            </h2>
+        </div>
+        <div class="table-responsive">
+            <table class="task-table table table-hover align-middle">
+                <thead class="table-primary">
+                <tr>
+                    <th style="width: 5%">#</th>
+                    <th style="width: 20%">Task Title</th>
+                    <th style="width: 25%">Description</th>
+                    <th style="width: 10%">Status</th>
+                    <th style="width: 10%">Priority</th>
+                    <th style="width: 10%">Creation Date</th>
+                    <th style="width: 10%">Due Date</th>
+                    <th style="width: 10%">Last Updated</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="task, status : ${assignedTasks}" class="task-row">
+                    <td th:text="${status.count}"></td>
+                    <!--                    <td th:text="${task.title}" th:data-task-id="${task.id}" onclick="openTask(this)"></td>-->
+                    <td>
+                        <div class="task-card-link d-flex align-items-center"
+                             th:data-task-id="${task.id}"
+                             onclick="openTask(this)">
+                            <i class="bi bi-card-heading me-2"></i>
+                            <span th:text="${task.title}"></span>
+                        </div>
+                    </td>
+                    <!--                    <td th:text="${task.description}"></td>-->
+                    <td>
+                        <div class="text-truncate" style="max-width: 250px;"
+                             th:text="${task.description}"
+                             th:title="${task.description}">
+                        </div>
+                    </td>
+                    <td>
                     <span th:classappend="'status-badge status-' + ${task.status}"
                           th:text="${task.status}"></span>
-                </td>
-                <td>
-                    <span th:text ="${task.priority}"
+                    </td>
+                    <td>
+                    <span th:text="${task.priority}"
                           class="priority-badge"
                           th:classappend="${task.priority == priorityClass.MINOR}? 'bg-secondary':
                               (${task.priority == priorityClass.NORMAL}? 'bg-info':
                               (${task.priority == priorityClass.CRITICAL}? 'bg-warning': 'bg-danger'))">
 
                     </span>
-                </td>
-                <td th:text="${#temporals.format(task.creationDate, 'yyyy-MM-dd HH:mm')}"></td>
-                <td th:text="${#temporals.format(task.dueDate, 'yyyy-MM-dd HH:mm')}"></td>
-                <td th:text="${#temporals.format(task.updateDate, 'yyyy-MM-dd HH:mm')}"></td>
-            </tr>
-            <tr th:if="${assignedTasks.empty}">
-                <td colspan="6" class="text-center text-muted">No tasks assigned to you</td>
-            </tr>
-            </tbody>
-        </table>
+                    </td>
+                    <td th:text="${#temporals.format(task.creationDate, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td th:text="${#temporals.format(task.dueDate, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td th:text="${#temporals.format(task.updateDate, 'yyyy-MM-dd HH:mm')}"></td>
+                </tr>
+                <!--                <tr th:if="${assignedTasks.empty}">-->
+                <!--                    <td colspan="6" class="text-center text-muted">No tasks assigned to you</td>-->
+                <!--                </tr>-->
+                <tr th:if="${assignedTasks.empty}">
+                    <td colspan="7" class="text-center py-4">
+                        <div class="empty-state">
+                            <i class="bi bi-inbox"></i>
+                            <p class="mb-0">No tasks assigned to you</p>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
-</div>>
-<div class="container">
-<!-- Created Tasks Section -->
-<div class="task-section">
-    <h2 class="task-header">
-        <i class="bi bi-pencil-square me-2"></i>Tasks You Created
-    </h2>
-    <button class="add-task-btn btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">
-        <i class="bi bi-plus"></i>
-    </button>
-    <div class="table-responsive">
-        <table class="task-table table table-hover">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>Task Title</th>
-                <th>Description</th>
-                <th>Status</th>
-                <th>Priority</th>
-                <th>Creation Date</th>
-                <th>Due Date</th>
-                <th>Last Updated</th>
-                <th>Assigned To</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="task, status : ${createdTasks}">
-                <td th:text="${status.count}"></td>
-                <td th:text="${task.title}" th:data-task-id="${task.id}" onclick="openTask(this)"></td>
-                <td th:text="${task.description}"></td>
-                <td>
+    <!--</div>-->
+
+    <!--<div class="container">-->
+    <!-- Created Tasks Section -->
+    <div class="task-section">
+<!--        <h2 class="task-header">-->
+<!--            <i class="bi bi-pencil-square me-2"></i>Tasks You Created-->
+<!--        </h2>-->
+<!--        <button class="add-task-btn btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">-->
+<!--            <i class="bi bi-plus"></i>-->
+<!--        </button>-->
+
+        <div class="d-flex justify-content-between align-items-center mb-4 section-header">
+            <h2 class="task-header m-0">
+                <i class="bi bi-pencil-square me-2"></i>Tasks You Created
+            </h2>
+            <button class="add-task-btn btn btn-primary" data-bs-toggle="modal" data-bs-target="#addTaskModal">
+                <i class="bi bi-plus-lg"></i>
+            </button>
+        </div>
+
+        <div class="table-responsive">
+            <table class="task-table table table-hover align-middle">
+                <thead class="table-primary">
+                <tr>
+                    <th style="width: 5%">#</th>
+                    <th style="width: 20%">Task</th>
+                    <th style="width: 20%">Description</th>
+                    <th style="width: 10%">Status</th>
+                    <th style="width: 10%">Priority</th>
+                    <th style="width: 10%">Creation Date</th>
+                    <th style="width: 10%">Due Date</th>
+                    <th style="width: 10%">Last Updated</th>
+                    <th style="width: 10%">Assigned To</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="task, status : ${createdTasks}" class="task-row">
+                    <td th:text="${status.count}"></td>
+<!--                    <td th:text="${task.title}" th:data-task-id="${task.id}" onclick="openTask(this)"></td>-->
+                    <td>
+                        <div class="task-card-link d-flex align-items-center"
+                             th:data-task-id="${task.id}"
+                             onclick="openTask(this)">
+                            <i class="bi bi-card-heading me-2"></i>
+                            <span th:text="${task.title}"></span>
+                        </div>
+                    </td>
+
+<!--                    <td th:text="${task.description}"></td>-->
+                    <td>
+                        <div class="text-truncate" style="max-width: 250px;"
+                             th:text="${task.description}"
+                             th:title="${task.description}">
+                        </div>
+                    </td>
+
+                    <td>
                     <span th:classappend="'status-badge status-' + ${task.status}"
                           th:text="${task.status}"></span>
-                </td>
-                <td>
-                    <span th:text ="${task.priority}"
+                    </td>
+                    <td>
+                    <span th:text="${task.priority}"
                           class="priority-badge"
                           th:classappend="${task.priority == priorityClass.MINOR}? 'bg-secondary':
                               (${task.priority == priorityClass.NORMAL}? 'bg-info':
                               (${task.priority == priorityClass.CRITICAL}? 'bg-warning': 'bg-danger'))">
 
                     </span>
-                </td>
-                <td th:text="${#temporals.format(task.creationDate, 'yyyy-MM-dd HH:mm')}"></td>
-                <td th:text="${#temporals.format(task.dueDate, 'yyyy-MM-dd HH:mm')}"></td>
-                <td th:text="${#temporals.format(task.updateDate, 'yyyy-MM-dd HH:mm')}"></td>
-                <td>
-                    <span th:if="${task.assignedTo !=null}" th:text ="${task.assignedTo.email}"></span>
-                    <span th:unless="${task.assignedTo !=null}" th:text ="Unassigned"></span>
-                </td>
-            </tr>
-            <tr th:if="${createdTasks.empty}">
-                <td colspan="6" class="text-center text-muted">You haven't created any tasks</td>
-            </tr>
-            </tbody>
-        </table>
+                    </td>
+                    <td th:text="${#temporals.format(task.creationDate, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td th:text="${#temporals.format(task.dueDate, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td th:text="${#temporals.format(task.updateDate, 'yyyy-MM-dd HH:mm')}"></td>
+<!--                    <td>-->
+<!--                        <span th:if="${task.assignedTo !=null}" th:text="${task.assignedTo.email}"></span>-->
+<!--                        <span th:unless="${task.assignedTo !=null}" th:text="Unassigned"></span>-->
+<!--                    </td>-->
+
+                    <td>
+                        <span th:if="${task.assignedTo != null}"
+                                  class="d-flex align-items-center">
+                            <i class="bi bi-person-circle me-1"></i>
+                            <span th:text="${task.assignedTo.email}"></span>
+                        </span>
+                        <span th:unless="${task.assignedTo != null}"
+                              class="text-muted">Unassigned</span>
+                    </td>
+                </tr>
+<!--                <tr th:if="${createdTasks.empty}">-->
+<!--                    <td colspan="6" class="text-center text-muted">You haven't created any tasks</td>-->
+<!--                </tr>-->
+
+                <tr th:if="${createdTasks.empty}">
+                    <td colspan="8" class="text-center py-4">
+                        <div class="empty-state">
+                            <i class="bi bi-inbox"></i>
+                            <p class="mb-0">You haven't created any tasks yet</p>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 </div>
 
 <div class="modal fade" id="addTaskModal" tabindex="-1" aria-labelledby="addTaskModalLabel" aria-hidden="true">
@@ -129,28 +200,31 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="taskTitle" class="form-label">Title</label>
-                        <input th:field= "*{title}" type="text" class="form-control" id="taskTitle" name="title" required>
+                        <input th:field="*{title}" type="text" class="form-control" id="taskTitle" name="title"
+                               required>
                     </div>
                     <div class="mb-3">
                         <label for="taskDescription" class="form-label">Description</label>
-                        <textarea th:field= "*{description}" class="form-control" id="taskDescription" name="description" rows="3"></textarea>
+                        <textarea th:field="*{description}" class="form-control" id="taskDescription" name="description"
+                                  rows="3"></textarea>
                     </div>
                     <div class="mb-3">
                         <label for="taskDueDate" class="form-label">Due Date</label>
-                        <input th:field= "*{dueDate}" type="datetime-local" class="form-control" id="taskDueDate" name="dueDate">
+                        <input th:field="*{dueDate}" type="datetime-local" class="form-control" id="taskDueDate"
+                               name="dueDate">
                     </div>
                     <div class="mb-3">
                         <label for="taskPriority" class="form-label">Priority</label>
-                        <select th:field= "*{priority}" class="form-select" id="taskPriority" name="taskPriority">
-                            <option th:each = "priority : ${priorityClass.values()}"
-                                    th:value ="${priority}"
-                                    th:text="${priority}"> </option>
+                        <select th:field="*{priority}" class="form-select" id="taskPriority" name="taskPriority">
+                            <option th:each="priority : ${priorityClass.values()}"
+                                    th:value="${priority}"
+                                    th:text="${priority}"></option>
                         </select>
                     </div>
 
                     <div class="mb-3">
                         <label>Assign To</label>
-                        <select th:field="*{userId}" class="form-select" name="assignedTo" id ="assignedTo">
+                        <select th:field="*{userId}" class="form-select" name="assignedTo" id="assignedTo">
                             <option value="">Unassigned</option>
                         </select>
                     </div>
@@ -167,9 +241,19 @@
 
 <script>
     function openTask(card){
-        const taskId = card.getAttribute('data-task-id');
+        const taskId = card.closest('[data-task-id]').getAttribute('data-task-id');
         window.location.href = `/tasks/${taskId}`;
     }
+    document.querySelectorAll('.task-row').forEach(row => {
+    console.log("row", row);
+        row.addEventListener('click', (e) => {
+            // Don't trigger if clicking on links/buttons
+            if (!e.target.closest('a, button, [data-bs-toggle]')) {
+                const link = row.querySelector('.task-card-link');
+                if (link) link.click();
+            }
+        });
+    });
 </script>
 
 <script th:src="@{/js/task-modal.js}" defer></script>

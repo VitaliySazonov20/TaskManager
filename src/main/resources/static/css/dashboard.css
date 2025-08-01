@@ -1,9 +1,14 @@
+:root {
+  --primary-gradient: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --hover-effect: translateY(-3px);
+}
 body {
             background-color: #f8f9fa;
             padding: 20px;
         }
         .column-body {
-            scrollbar-width: thin; /* For Firefox */
+            scrollbar-width: thin;
             overflow-y: auto;
             margin-top: 10px;
         }
@@ -97,12 +102,15 @@ body {
             justify-content: flex-start;
         }
 .priority-badge {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     padding: 0.35em 0.65em;
     position: absolute;
     right: 1rem;
     top: 1rem;
+    text-transform: uppercase;
+    font-weight: 600;
 }
+
 .card-body {
     position: relative; /* Needed for absolute positioning of badge */
     padding-top: 1.5rem; /* Give space for badge */
@@ -115,4 +123,39 @@ body {
 }
 .align-items-start {
     align-items: flex-start;
+}
+.task-card {
+  transition: all 0.3s ease;
+  box-shadow: var(--card-shadow);
+  border-radius: 8px;
+}
+.task-card:hover {
+  transform: var(--hover-effect);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+.dashboard-header {
+  border-bottom: 2px solid #f0f0f0; /* Subtle underline */
+  color: #2c3e50; /* Darker text */
+}
+/* Card enhancements */
+.task-card .card-body {
+    padding: 1.25rem;
+    transition: all 0.3s ease;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem;
+  color: #6c757d;
+}
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .dashboard .row {
+        flex-wrap: wrap;
+    }
+    .dashboard .col-md-3 {
+        flex: 0 0 100%;
+        max-width: 100%;
+        margin-bottom: 1rem;
+    }
 }

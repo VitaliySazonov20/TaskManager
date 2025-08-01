@@ -2,20 +2,34 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <div class="comments-container" id="comments-container" th:fragment="commentsList">
-    <div th:each="comment : ${allComments}" class="comment-card">
-        <div class="comment-header">
-                            <span class="comment-author"
-                                  th:text="${comment.user.firstName + ' ' + comment.user.lastName}">
-                                User Name
-                            </span>
-            <span class="comment-time"
+    <div th:each="comment : ${allComments}" class="comment-card mb-3">
+        <div class="comment-header d-flex justify-content-between align-items-center mb-2">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-person-circle me-2 text-primary"></i>
+                <span class="comment-author fw-semibold"
+                      th:text="${comment.user.firstName + ' ' + comment.user.lastName}">
+                </span>
+            </div>
+<!--            <span class="comment-author"-->
+<!--                  th:text="${comment.user.firstName + ' ' + comment.user.lastName}">-->
+<!--                                User Name-->
+<!--            </span>-->
+            <span class="comment-time text-muted small"
                   th:text="${#temporals.format(comment.creationTimestamp, 'MMM dd, yyyy HH:mm')}">
-                                Oct 15, 2023 14:30
-                            </span>
+            </span>
+<!--            <span class="comment-time"-->
+<!--                  th:text="${#temporals.format(comment.creationTimestamp, 'MMM dd, yyyy HH:mm')}">-->
+<!--                                Oct 15, 2023 14:30-->
+<!--            </span>-->
         </div>
-        <div class="comment-text" th:text="${comment.text}">
+        <div class="comment-text bg-light p-3 rounded" th:text="${comment.text}">
             This is a sample comment message...
         </div>
+
+    </div>
+    <div th:if="${#lists.isEmpty(allComments)}" class="text-center py-4 text-muted">
+        <i class="bi bi-chat-square-text" style="font-size: 2rem;"></i>
+        <p class="mt-2 mb-0">No comments yet</p>
     </div>
 </div>
 </body>

@@ -18,6 +18,17 @@ document.getElementById('post-comment-btn').addEventListener('click', async () =
 //            console.log("Comment posted :^) ");
             await refreshComments(taskId);
             message.value = '';
+            const commentsContainer = document.getElementById('comments-container');
+                    if (commentsContainer) {
+                        // Jump to bottom without animation
+                        commentsContainer.style.scrollBehavior = 'auto';
+                        commentsContainer.scrollTop = commentsContainer.scrollHeight;
+
+                        // Re-enable smooth scrolling for future interactions (optional)
+                        setTimeout(() => {
+                            commentsContainer.style.scrollBehavior = 'smooth';
+                        }, 0);
+                    }
         }
     } catch (error){
         console.error('Error:', error);
