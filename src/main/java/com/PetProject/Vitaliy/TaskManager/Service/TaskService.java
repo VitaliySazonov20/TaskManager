@@ -44,14 +44,12 @@ public class TaskService {
 
     @Transactional(readOnly = true)
     public List<Task> getAllTaskAssignedToUser(User user) {
-        List<Task> tasks = taskRepo.findByAssignedTo(user);
-        return tasks != null ? tasks : Collections.emptyList();
+        return taskRepo.findByAssignedTo(user);
     }
 
     @Transactional(readOnly = true)
     public List<Task> getAllTasksCreatedByUser(User user) {
-        List<Task> tasks = taskRepo.findByCreatedBy(user);
-        return tasks != null ? tasks : Collections.emptyList();
+        return taskRepo.findByCreatedBy(user);
     }
 
     @Transactional(readOnly = true)
@@ -61,85 +59,43 @@ public class TaskService {
 
     @Transactional
     public void updateStatus(BigInteger id, TaskStatus status) {
-        Objects.requireNonNull(id, "Task ID cannot be null");
-        Objects.requireNonNull(status, "Status cannot be null");
         Task task = taskRepo.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));;
-        if (task == null) {
-            throw new EntityNotFoundException("Task not found with ID: " + id);
-        }
+                new EntityNotFoundException("Task not found with ID: " + id));
         task.setStatus(status);
         task.setUpdateDate(LocalDateTime.now());
-        try {
-            taskRepo.save(task);
-        } catch (DataAccessException e) {
-            throw new ServiceException("Status update failed", e);
-        }
+        taskRepo.save(task);
     }
 
     @Transactional
     public void updateStatus(BigInteger id, TaskStatus status, User user) {
         Task task = taskRepo.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));;
-        if (task == null) {
-            throw new EntityNotFoundException("Task not found with ID: " + id);
-        }
+                new EntityNotFoundException("Task not found with ID: " + id));
         task.setStatus(status);
         task.setUpdateDate(LocalDateTime.now());
         task.setAssignedTo(user);
-        try {
-            taskRepo.save(task);
-        } catch (DataAccessException e) {
-            throw new ServiceException("Status update failed", e);
-        }
+        taskRepo.save(task);
     }
 
     @Transactional(readOnly = true)
     public Task getTaskById(BigInteger id) {
-        Objects.requireNonNull(id, "Task ID cannot be null");
-        Task task = taskRepo.findById(id).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found"));;
-        if (task == null) {
-            throw new EntityNotFoundException("Task not found with ID: " + id);
-        }
-        return task;
+        return taskRepo.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Task not found with ID: " + id));
     }
 
     @Transactional
     public void deleteTaskById(BigInteger id) {
-        Objects.requireNonNull(id, "Task ID cannot be null");
-        try {
-            if (!taskRepo.existsById(id)) {
-                throw new EntityNotFoundException("Cannot delete - Task not found with ID: " + id);
-            }
-            taskRepo.deleteById(id);
-        } catch (DataIntegrityViolationException e) {
-            throw new ServiceException("Cannot delete task due to existing references", e);
-        } catch (DataAccessException e) {
-            throw new ServiceException("Failed to delete task", e);
-        }
+        Task task = taskRepo.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Task not found with ID: " + id));
+        taskRepo.deleteById(task.getId());
     }
 
     @Transactional(readOnly = true)
     public List<Task> eagerLoadAllTasksWithTheirUsers() {
-        try {
-            List<Task> tasks = taskRepo.findAllTasksWithUsers();
-            return tasks != null ? tasks : Collections.emptyList();
-        } catch (DataAccessException e) {
-            throw new ServiceException("Failed to load tasks with user data", e);
-        }
+        return taskRepo.findAllTasksWithUsers();
     }
-
-    @Transactional
-    public Optional<Task> findLatestTaskByEmail(String email) {
-        if (StringUtils.isBlank(email)) {
-            throw new IllegalArgumentException("Email must not be blank");
-        }
-        try {
-            Optional<Task> task = taskRepo.findTopByCreatedByEmailOrderByIdDesc(email);
-            return taskRepo.findTopByCreatedByEmailOrderByIdDesc(email);
-        } catch (DataAccessException e) {
-            throw new ServiceException("Failed to fetch latest task", e);
-        }
-    }
+//
+//    @Transactional
+//    public Optional<Task> findLatestTaskByEmail(String email) {
+//        return taskRepo.findTopByCreatedByEmailOrderByIdDesc(email);
+//    }
 }

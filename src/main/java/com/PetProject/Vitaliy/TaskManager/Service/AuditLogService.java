@@ -34,77 +34,45 @@ public class AuditLogService {
 
     private static final Logger log = LoggerFactory.getLogger(AuditLogService.class);
 
-
-    public void save(AuditLog log){
+    @Transactional
+    public void save(AuditLog log) {
         auditLogRepository.save(log);
     }
 
     @Transactional(readOnly = true)
-    public Optional<Task> getLatestTaskByUserEmail(String email){
-            return taskRepository.findTopByCreatedByEmailOrderByIdDesc(email);
+    public Optional<Task> getLatestTaskByUserEmail(String email) {
+        return taskRepository.findTopByCreatedByEmailOrderByIdDesc(email);
     }
 
     @Transactional(readOnly = true)
-    public Page<AuditLog> getAllLogs(Pageable pageable){
-        Objects.requireNonNull(pageable, "Pageable parameter must not be null");
-        try {
-            return auditLogRepository.findAllPaginated(pageable);
-        } catch (DataAccessException e){
-            log.error("Database error while fetching audit logs", e);
-            throw new ServiceException("Failed to retrieve audit logs",e);
-        } catch (IllegalArgumentException e){
-            log.warn("Invalid pagination parameters: {}",pageable);
-            throw new ServiceException("Invalid pagination request", e);
-        }
+    public Page<AuditLog> getAllLogs(Pageable pageable) {
+        return auditLogRepository.findAllPaginated(pageable);
     }
 
-    @Transactional(readOnly = true,rollbackFor = Exception.class)
+    @Transactional(readOnly = true, rollbackFor = Exception.class)
     public Page<AuditLog> getFilteredLogs(String action,
                                           String username,
                                           LocalDateTime startDate,
                                           LocalDateTime endDate,
                                           Pageable pageable) {
 
-        action = StringUtils.hasText(action)? action : null;
-        username = StringUtils.hasText(username)? username : null;
-        Objects.requireNonNull(pageable,"Pageable parameter must not be null");
-
-//        if(startDate !=null && endDate != null && startDate.isAfter(endDate)){
-//            throw new ServiceException("Start date cannot be after end date");
-//        }
-        try {
-            return auditLogRepository.findFiltered(action, username, startDate, endDate, pageable);
-        } catch (DataAccessException e){
-            log.error("Database error while fetching filtered logs",e);
-            throw new ServiceException("Failed to retrieve filtered audit logs", e);
-        }
+        action = StringUtils.hasText(action) ? action : null;
+        username = StringUtils.hasText(username) ? username : null;
+        return auditLogRepository.findFiltered(action, username, startDate, endDate, pageable);
     }
 
     @Transactional
-    public List<AuditLog> getAllLogsAsList(){
-        try {
-            return auditLogRepository.findAllLogsAsList();
-        } catch (DataAccessException e){
-            throw new ServiceException("Failed to retrieve audit logs", e);
-        }
+    public List<AuditLog> getAllLogsAsList() {
+        return auditLogRepository.findAllLogsAsList();
     }
 
     public List<AuditLog> getAllFilteredLogsAsList(String action,
                                                    String username,
                                                    LocalDateTime startDate,
-                                                   LocalDateTime endDate){
+                                                   LocalDateTime endDate) {
 
-        action = StringUtils.hasText(action)? action : null;
-        username = StringUtils.hasText(username)? username : null;
-        if(startDate !=null && endDate != null && startDate.isAfter(endDate)){
-            throw new IllegalArgumentException("Start date cannot be after end date");
-        }
-        try {
-            return auditLogRepository.findFilteredAsList(action, username, startDate, endDate);
-        } catch (DataAccessException e){
-            throw new ServiceException("Failed to retrieve filtered audit logs", e);
-        } catch (IllegalArgumentException e){
-            throw new ServiceException("Invalid filter parameters: "+ e.getMessage(),e);
-        }
+        action = StringUtils.hasText(action) ? action : null;
+        username = StringUtils.hasText(username) ? username : null;
+        return auditLogRepository.findFilteredAsList(action, username, startDate, endDate);
     }
 }

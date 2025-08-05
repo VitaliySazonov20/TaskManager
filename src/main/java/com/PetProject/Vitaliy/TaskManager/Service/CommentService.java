@@ -3,6 +3,8 @@ package com.PetProject.Vitaliy.TaskManager.Service;
 import com.PetProject.Vitaliy.TaskManager.Repository.CommentRepository;
 import com.PetProject.Vitaliy.TaskManager.Repository.TaskRepository;
 import com.PetProject.Vitaliy.TaskManager.entity.Comment;
+import com.PetProject.Vitaliy.TaskManager.entity.Task;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.hibernate.service.spi.ServiceException;
@@ -23,26 +25,16 @@ public class CommentService {
     @Autowired
     private TaskRepository taskRepository;
 
-    public void saveComment(Comment comment){
+    @Transactional
+    public void saveComment(Comment comment) {
         commentRepository.save(comment);
     }
 
 
-    public List<Comment> getCommentsById(BigInteger taskId){
-        if(taskId == null){
-            throw new ServiceException("Task ID cannot be null");
-        }
-        if(!taskRepository.existsById(taskId)){
-            throw new ServiceException("Task with ID " + taskId + " not found");
-        }
-        try {
-            List<Comment> comments = commentRepository.findByTaskId(taskId);
-            return comments != null? comments: Collections.emptyList();
-        } catch (DataAccessException e){
-            throw new ServiceException("Failed to comments", e);
-        } catch (Exception e){
-            throw new ServiceException("Unexpected error while retrieving comments", e);
-        }
-
+    @Transactional(readOnly = true)
+    public List<Comment> getCommentsById(BigInteger taskId) {
+        Task task = taskRepository.findById(taskId).orElseThrow(()->
+                new EntityNotFoundException("Task not found with ID: " + taskId));
+        return commentRepository.findByTaskId(task.getId());
     }
 }

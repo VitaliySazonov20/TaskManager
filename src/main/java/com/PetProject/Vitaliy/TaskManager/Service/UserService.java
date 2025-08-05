@@ -35,95 +35,54 @@ public class UserService {
     private UserRepository userRepo;
 
     @Transactional
-    public void saveUser(User user){
-        try {
-            Objects.requireNonNull(user,"User cannot be null");
-            userRepo.save(user);
-        } catch (DataIntegrityViolationException e){
-            throw new ServiceException("Failed to save user due to data constraints", e);
-        } catch (DataAccessException e){
-            throw new ServiceException("Failed to save user", e);
-        }
+    public void saveUser(User user) {
+        userRepo.save(user);
     }
 
     @Transactional(readOnly = true)
-    public boolean checkIfEmailExists(String email){
-        if(StringUtils.isBlank(email)){
-            throw new IllegalArgumentException("Email cannot be blank");
-        }
-        try {
-            return userRepo.existsByEmail(email);
-        } catch (DataAccessException e){
-            throw new ServiceException("Email check service unavailable", e);
-        }
+    public boolean checkIfEmailExists(String email) {
+        return userRepo.existsByEmail(email);
     }
 
     @Transactional
-    public void registerUser(RegistrationForm form){
-        try{
-            Objects.requireNonNull(form, "Registration form cannot be null");
-
-            User user = new User(form.getFirstName(), form.getLastName(), form.getEmail());
-
-            UserCredentials userCredentials = new UserCredentials();
-            userCredentials.setRole(Role.USER);
-            userCredentials.setPasswordHash(passwordEncoder.encode(form.getPassword()));
-            userCredentials.setUser(user);
-            user.setUserCredentials(userCredentials);
-
-            userRepo.save(user);
-            userCredRepo.save(userCredentials);
-        } catch (DataAccessException e){
-            throw new ServiceException("Registration failed", e);
-        }
+    public void registerUser(RegistrationForm form) {
+        User user = new User(form.getFirstName(), form.getLastName(), form.getEmail());
+        UserCredentials userCredentials = new UserCredentials();
+        userCredentials.setRole(Role.USER);
+        userCredentials.setPasswordHash(passwordEncoder.encode(form.getPassword()));
+        userCredentials.setUser(user);
+        user.setUserCredentials(userCredentials);
+        userRepo.save(user);
+        userCredRepo.save(userCredentials);
     }
 
     @Transactional
-    public List<User> getAllUsers(){
-        try{
-            List<User> users = userRepo.findAll();
-            return users != null ? users:Collections.emptyList();
-        } catch (DataAccessException e){
-            throw new ServiceException("Failed to load users", e);
-        }
+    public List<User> getAllUsers() {
+        List<User> users = userRepo.findAll();
+        return users != null ? users : Collections.emptyList();
     }
 
     @Transactional
-    public User getUserById(BigInteger id){
-        Objects.requireNonNull(id, "User ID cannot be null");
-        if(!userRepo.existsById(id)){
+    public User getUserById(BigInteger id) {
+        if (!userRepo.existsById(id)) {
             throw new UserNotFoundException(id);
         }
-        try {
-            return userRepo.getById(id);
-        } catch (DataAccessException e){
-            throw new ServiceException("Failed to retrieve user", e);
-        }
+        return userRepo.getById(id);
     }
 
     @Transactional
-    public void deleteUserById(BigInteger id){
-        Objects.requireNonNull(id, "User ID cannot be null");
-        if(!userRepo.existsById(id)){
+    public void deleteUserById(BigInteger id) {
+        if (!userRepo.existsById(id)) {
             throw new UserNotFoundException(id);
         }
-        try{
-            userRepo.deleteById(id);
-        }catch (DataAccessException e){
-            throw new ServiceException("Failed to delete user", e);
-        }
+        userRepo.deleteById(id);
     }
 
     @Transactional
-    public User getUserByEmail(String email){
-        Objects.requireNonNull(email, "User email cannot be null");
-        if(!userRepo.existsByEmail(email)){
+    public User getUserByEmail(String email) {
+        if (!userRepo.existsByEmail(email)) {
             throw new UserNotFoundException(email);
         }
-        try {
-            return userRepo.getByEmail(email);
-        }catch (DataAccessException e){
-            throw new ServiceException("Failed to retrieve user", e);
-        }
+        return userRepo.getByEmail(email);
     }
 }

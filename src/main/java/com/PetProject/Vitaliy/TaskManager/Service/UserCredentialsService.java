@@ -28,64 +28,24 @@ public class UserCredentialsService {
     private UserCredentialsRepository userCredRepo;
 
     @Transactional
-    public void saveUserCred(UserCredentials userCred){
-        Objects.requireNonNull(userCred, "User credentials cannot be null");
-        try {
-            Objects.requireNonNull(userCred.getPassword(), "Password cannot be empty");
-            Objects.requireNonNull(userCred.getRole(), "Role must be specified");
-
-            if (!isPasswordEncoded(userCred.getPassword())) {
-                userCred.setPasswordHash(encodePassword(userCred.getPassword()));
-            }
-            userCredRepo.save(userCred);
-        } catch (DataAccessException e){
-            throw new ServiceException("Failed to save credentials", e);
-        }
+    public void saveUserCred(UserCredentials userCred) {
+        userCredRepo.save(userCred);
     }
 
     @Transactional
-    public List<UserCredentials> getCredentialsByRole(Role role){
-        Objects.requireNonNull(role, "Role cannot be null");
-        try {
-            List<UserCredentials> credentials = userCredRepo.findByRole(role);
-            if(credentials.isEmpty() || credentials == null){
-                return Collections.emptyList();
-            }
-            return credentials;
-        } catch (DataAccessException e){
-            throw new ServiceException("Failed to load credentials", e);
+    public List<UserCredentials> getCredentialsByRole(Role role) {
+        List<UserCredentials> credentials = userCredRepo.findByRole(role);
+        if (credentials.isEmpty()) {
+            return Collections.emptyList();
         }
+        return credentials;
     }
 
-    public boolean verifyPasswords(String oldPassword,String inputtedPassword){
-        if(StringUtils.isBlank(oldPassword)){
-            throw new IllegalArgumentException("Old password cannot be blank");
-        }
-        if(StringUtils.isBlank(inputtedPassword)){
-            throw new IllegalArgumentException("New password cannot be blank");
-        }
-        try {
-            return passwordEncoder.matches(inputtedPassword,oldPassword);
-        } catch (Exception e){
-            return false;
-        }
-    }
-    public String encodePassword(String password){
-        if(StringUtils.isBlank(password)){
-            throw new IllegalArgumentException("Password cannot be blank");
-        }
-        try {
-            String encoded = passwordEncoder.encode(password);
-            if (encoded == null){
-                throw new ServiceException("Password encoding failed");
-            }
-            return encoded;
-        } catch (Exception e){
-            throw new ServiceException("Failed to encode password",e);
-        }
+    public boolean verifyPasswords(String oldPassword, String inputtedPassword) {
+        return passwordEncoder.matches(inputtedPassword, oldPassword);
     }
 
-    private boolean isPasswordEncoded(String password) {
-        return password.startsWith("$2a$"); // BCrypt pattern check
+    public String encodePassword(String password) {
+        return passwordEncoder.encode(password);
     }
 }

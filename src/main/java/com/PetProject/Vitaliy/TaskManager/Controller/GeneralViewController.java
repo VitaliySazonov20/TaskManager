@@ -96,7 +96,6 @@ public class GeneralViewController {
         model.addAttribute("createdTasks", Collections.emptyList());
         model.addAttribute("priorityClass", Priority.class);
         model.addAttribute("error", errorMsg);
-
     }
 
     @PostMapping("/tasks")
