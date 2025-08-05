@@ -11,6 +11,11 @@
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 <div class="container-fluid py-4">
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
     <div class="task-section mb-5">
         <div class="d-flex justify-content-between align-items-center mb-4 section-header">
             <h2 class="task-header m-0">

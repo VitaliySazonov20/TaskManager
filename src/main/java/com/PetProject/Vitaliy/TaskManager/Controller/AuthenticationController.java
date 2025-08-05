@@ -96,7 +96,7 @@ public class AuthenticationController {
             currentUser.setFirstName(editedUser.getFirstName());
             currentUser.setLastName(editedUser.getLastName());
 
-            redirectAttributes.addFlashAttribute("success", true);
+            redirectAttributes.addFlashAttribute("success", "Successfully saved new details");
             userService.saveUser(currentUser);
         } catch (Exception e){
             log.error("Couldn't save the users profile",e);
@@ -136,9 +136,10 @@ public class AuthenticationController {
             UserCredentials currentUserCred = currentUser.getUserCredentials();
             currentUserCred.setPasswordHash(userCredentialsService.encodePassword(passwordChange.getNewPassword()));
             currentUser.setUserCredentials(currentUserCred);
-            redirectAttributes.addFlashAttribute("success", true);
             userService.saveUser(currentUser);
             userCredentialsService.saveUserCred(currentUserCred);
+            redirectAttributes.addFlashAttribute("success", "Successfully changed password");
+
         } catch (Exception e){
             log.error("Couldn't save the user's new password" ,e);
             redirectAttributes.addFlashAttribute("error","Failed to update password");

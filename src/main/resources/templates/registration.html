@@ -10,59 +10,77 @@
 <body>
 <div class="container">
     <div class="login-container bg-light">
-        <h2 class="text-center mb-4">Task Manager Registration</h2>
+        <div class="login-header text-center mb-4">
+            <i class="bi bi-kanban-fill login-icon"></i>
+            <h1 class="h3 mb-3">Create Account</h1>
+            <p class="text-muted">Join Task Manager to organize your work</p>
+        </div>
 
-        <form th:object = "${registrationForm}" th:action = "@{/register}" method="post">
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span th:text="${error}">Registration failed. Please try again later</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
 
-            <!--First Name-->
-            <div>
-                <label>First Name:</label>
-                <input type="text" th:field="*{firstName}"
+        <form th:object="${registrationForm}" th:action="@{/register}" method="post">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="firstName" th:field="*{firstName}"
                        th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid' : ''"
                        placeholder="First Name" required>
+                <label for="firstName">First Name</label>
                 <div th:if="${#fields.hasErrors('firstName')}" class="invalid-feedback">
                     <span th:errors="*{firstName}"></span>
                 </div>
             </div>
-            <!--Last Name-->
-            <div>
-                <label>Last Name:</label>
-                <input type="text" th:field="*{lastName}"
+
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="lastName" th:field="*{lastName}"
                        placeholder="Last Name">
+                <label for="lastName">Last Name</label>
             </div>
-            <!--Email-->
-            <div>
-                <label>Email:</label>
-                <input type="email" th:field="*{email}"
+
+            <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="email" th:field="*{email}"
                        th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
                        placeholder="Email@example.com" required>
+                <label for="email">Email address</label>
                 <div th:if="${#fields.hasErrors('email')}" class="invalid-feedback">
                     <span th:errors="*{email}"></span>
                 </div>
             </div>
-            <!--Password-->
-            <div>
-                <label>Password:</label>
-                <input type="password" th:field="*{password}"
+
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="password" th:field="*{password}"
                        th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
                        placeholder="Password" required>
+                <label for="password">Password</label>
                 <div th:if="${#fields.hasErrors('password')}" class="invalid-feedback">
                     <span th:errors="*{password}"></span>
                 </div>
             </div>
-            <!--Confirmation Password-->
-            <div>
-                <label>Confirm Password:</label>
-                <input type="password" th:field="*{confirmationPassword}"
+
+            <div class="form-floating mb-4">
+                <input type="password" class="form-control" id="confirmationPassword"
+                       th:field="*{confirmationPassword}"
                        th:classappend="${#fields.hasErrors('confirmationPassword')} ? 'is-invalid' : ''"
                        placeholder="Confirm Password" required>
+                <label for="confirmationPassword">Confirm Password</label>
                 <div th:if="${#fields.hasErrors('passwordsMatch')}" class="invalid-feedback">
-                    <span th:errors="*{passwordsMatch}"></span></div>
+                    <span th:errors="*{passwordsMatch}"></span>
+                </div>
             </div>
-            <!--Register button-->
-            <button class="btn btn-primary" type="submit">Register</button>
+            <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">
+                <i class="bi bi-person-plus-fill me-2"></i> Register
+            </button>
         </form>
+        <div class="text-center">
+            <p class="text-muted">Already have an account? <a th:href="@{/login}" class="text-decoration-none">Sign
+                in</a></p>
+        </div>
     </div>
 </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

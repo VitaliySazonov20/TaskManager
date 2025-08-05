@@ -30,6 +30,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -67,39 +68,32 @@ public class GeneralViewController {
 
     @GetMapping("/tasks")
     public String showAllTasks(Model model) {
+        prepareBaseModelForAllTasks(model);
         try {
             User currentUser = securityContextService.getCurrentUser();
             List<Task> assignedTasks = taskService.getAllTaskAssignedToUser(currentUser);
             List<Task> createdTasks = taskService.getAllTasksCreatedByUser(currentUser);
 
-            assignedTasks = assignedTasks != null ? assignedTasks : Collections.emptyList();
-            createdTasks = createdTasks != null ? createdTasks : Collections.emptyList();
 
-            TaskModel newTask = new TaskModel();
-            model.addAttribute("newTask", newTask);
             model.addAttribute("assignedTasks", assignedTasks);
             model.addAttribute("createdTasks", createdTasks);
-            model.addAttribute("priorityClass", Priority.class);
-        } catch (ServiceException e) {
-            log.error("Failed to load created/assigned tasks of user", e);
-            prepareErrorModel(model, "Failed to load tasks. Please try again.");
         } catch (Exception e) {
             log.error("Unexpected error", e);
-            prepareErrorModel(model, "An unexpected error happened. Please try again");
+            model.addAttribute("error", "Unexpected error occurred. Please try again.");
         }
         return "tasks";
     }
 
-    private void prepareErrorModel(Model model, String errorMsg) {
+    private void prepareBaseModelForAllTasks(Model model) {
         model.addAttribute("newTask", new TaskModel());
         model.addAttribute("assignedTasks", Collections.emptyList());
         model.addAttribute("createdTasks", Collections.emptyList());
         model.addAttribute("priorityClass", Priority.class);
-        model.addAttribute("error", errorMsg);
     }
 
     @PostMapping("/tasks")
-    public String addATask(@ModelAttribute("newTask") TaskModel newTask) {
+    public String addATask(@ModelAttribute("newTask") TaskModel newTask,
+                           RedirectAttributes redirectAttributes) {
         try {
             User currentUser = securityContextService.getCurrentUser();
             Task task = new Task();
@@ -115,27 +109,22 @@ public class GeneralViewController {
             }
             task.setPriority(newTask.getPriority());
             taskService.saveTask(task);
-
-        } catch (UserNotFoundException e) {
-            log.error("User not found during task creation", e);
         } catch (Exception e) {
             log.error("Task creation failed", e);
+            redirectAttributes.addFlashAttribute("error",
+                    "Unexpected error occurred when creating new task");
         }
         return "redirect:/tasks";
     }
 
     @GetMapping("/dashboard")
     public String viewDashboard(Model model) {
+        model.addAttribute("taskStatus", TaskStatus.class);
+        model.addAttribute("taskPriority", Priority.class);
+        model.addAttribute("currentUserId", securityContextService.getCurrentUser().getId());
         try {
             List<Task> allTasks = taskService.eagerLoadAllTasksWithTheirUsers();
-            model.addAttribute("allTasks", allTasks != null ? allTasks : Collections.emptyList());
-            model.addAttribute("taskStatus", TaskStatus.class);
-            model.addAttribute("taskPriority", Priority.class);
-            model.addAttribute("currentUserId", securityContextService.getCurrentUser().getId());
-        } catch (ServiceException e) {
-            log.error("Failed to load dashboard data", e);
-            model.addAttribute("allTasks", Collections.emptyList());
-            model.addAttribute("error", "Failed to load tasks. Please try again.");
+            model.addAttribute("allTasks", allTasks);
         } catch (Exception e) {
             log.error("Unexpected error in dashboard", e);
             model.addAttribute("allTasks", Collections.emptyList());
@@ -146,23 +135,29 @@ public class GeneralViewController {
 
     @PostMapping("/tasks/{id}/accept")
     public String acceptTask(@PathVariable BigInteger id,
-                             HttpServletRequest request) {
+                             HttpServletRequest request,
+                             RedirectAttributes redirectAttributes) {
         User user = securityContextService.getCurrentUser();
         try {
             taskService.updateStatus(id, TaskStatus.IN_PROGRESS, user);
-        } catch (ServiceException e) {
+        } catch (Exception e) {
             log.error("Could not update task status",e);
+            redirectAttributes.addFlashAttribute("error",
+                    "Couldn't update task status");
         }
         return "redirect:" + request.getHeader("Referer");
     }
 
     @PostMapping("/tasks/{id}/complete")
     public String completeTask(@PathVariable BigInteger id,
-                               HttpServletRequest request) {
+                               HttpServletRequest request,
+                               RedirectAttributes redirectAttributes) {
         try {
             taskService.updateStatus(id, TaskStatus.DONE);
         } catch (ServiceException e) {
             log.error("Could not update task status",e);
+            redirectAttributes.addFlashAttribute("error",
+                    "Couldn't update task status");
         }
         return "redirect:" + request.getHeader("Referer");
     }
@@ -174,8 +169,8 @@ public class GeneralViewController {
 //            """)
     @GetMapping("/tasks/{taskId}")
     public String viewTask(@PathVariable BigInteger taskId,
-//                           @ModelAttribute("allTasks") List<Task> allTasks,
-                           Model model) {
+                           Model model,
+                           RedirectAttributes redirectAttributes) {
         try {
             if (!securityContextService.isAdmin() &&
                     !taskSecurityService.isCreator(taskId) &&
@@ -199,7 +194,9 @@ public class GeneralViewController {
             model.addAttribute("currentUserId", securityContextService.getCurrentUser().getId());
             return "currentTask";
         } catch (Exception e){
-            log.error("Error view task");
+            log.error("Error viewing task");
+            redirectAttributes.addFlashAttribute("error", "Unexpected error." +
+                    "Couldn't view the task. Please try again later");
             return "redirect:/dashboard";
         }
     }
@@ -222,7 +219,8 @@ public class GeneralViewController {
     }
 
     @GetMapping("/user")
-    public String viewCurrentUser(Model model) {
+    public String viewCurrentUser(Model model,
+                                  RedirectAttributes redirectAttributes) {
         try{
             User currentUser = securityContextService.getCurrentUser();
             UserModel editedUser = new UserModel();
@@ -235,6 +233,8 @@ public class GeneralViewController {
             model.addAttribute("passwordChange", passwordChange);
         } catch (Exception e){
             log.error("Unexpected error",e);
+            redirectAttributes.addFlashAttribute("An unexpected error occurred." +
+                    " Redirected to different page");
             return "redirect:/dashboard";
         }
         return "currentUser";
