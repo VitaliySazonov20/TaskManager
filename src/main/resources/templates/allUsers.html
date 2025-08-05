@@ -12,41 +12,51 @@
 </head>
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
-<div class="container">
-    <div class="user-section">
-        <h2 class="user-header">
-            <i class="bi bi-pencil-square me-2"></i>List of All users
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h4 mb-0">
+            <i class="bi bi-people-fill text-primary me-2"></i>User Management
         </h2>
-        <button class="add-user-btn btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">
-            <i class="bi bi-plus"></i>
+        <button class="btn btn-primary add-user-btn" data-bs-toggle="modal" data-bs-target="#addUserModal">
+            <i class="bi bi-plus-lg"></i> Add User
         </button>
+    </div>
+
+    <!--    <div class="user-section">-->
+    <!--        <h2 class="user-header">-->
+    <!--            <i class="bi bi-pencil-square me-2"></i>List of All users-->
+    <!--        </h2>-->
+    <!--        <button class="add-user-btn btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal">-->
+    <!--            <i class="bi bi-plus"></i>-->
+    <!--        </button>-->
+    <div class="card shadow-sm">
         <div class="table-responsive">
-            <table class="user-table table table-hover">
-                <thead>
+            <table class="table table-hover align-middle mb-0">
+                <thead class="user-table">
                 <tr>
-                    <th>#</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Email</th>
-                    <th>Actions</th>
+                    <th style="width: 5%">#</th>
+                    <th style="width: 25%">First Name</th>
+                    <th style="width: 25%">Last Name</th>
+                    <th style="width: 25%">Email</th>
+                    <th style="width: 20%">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="user,status : ${allUsers}">
-                    <td th:text="${status.count}"></td>
+                    <td th:text="${status.count}" class="text-muted small"></td>
                     <td th:text="${user.firstName}"></td>
                     <td th:text="${user.lastName}"></td>
                     <td th:text="${user.email}"></td>
-                    <td>
+                    <td class="text-end">
                         <div class="btn-group" role="group">
-                            <button class="btn btn-sm btn-outline-primary"
+                            <button class="btn btn-sm btn-outline-primary action-btn"
                                     data-bs-toggle="modal"
                                     data-bs-target="#editUserModal"
                                     th:data-user-id=${user.id}>
                                 <i class="bi bi-pencil"></i>
                             </button>
 
-                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                            <button type="submit" class="btn btn-sm btn-outline-danger action-btn"
                                     data-bs-toggle="modal"
                                     data-bs-target="#deleteConfirmModal"
                                     th:data-user-id="${user.id}">
@@ -55,6 +65,12 @@
                         </div>
                     </td>
 
+                </tr>
+                <tr th:if="${allUsers.empty}">
+                    <td colspan="5" class="text-center py-5">
+                        <i class="bi bi-people-slash" style="font-size: 2rem; opacity: 0.3;"></i>
+                        <p class="mt-3 text-muted">No users found</p>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -76,14 +92,14 @@
                     <!--First Name-->
                     <div class="mb-3">
                         <label>First Name:</label>
-                        <input type="text" th:field="*{firstName}" class="form-control" name = "firstName"
+                        <input type="text" th:field="*{firstName}" class="form-control" name="firstName"
                                placeholder="First Name" required>
                         <div class="invalid-feedback" id="firstNameError"></div>
                     </div>
                     <!--Last Name-->
                     <div class="mb-3">
                         <label>Last Name:</label>
-                        <input type="text" th:field="*{lastName}" class="form-control" name = "lastName"
+                        <input type="text" th:field="*{lastName}" class="form-control" name="lastName"
                                placeholder="Last Name">
                     </div>
                     <!--Email-->
@@ -103,7 +119,8 @@
                     <!--Confirmation Password-->
                     <div class="mb-3">
                         <label>Confirm Password:</label>
-                        <input type="password" th:field="*{confirmationPassword}" class="form-control" name="confirmationPassword"
+                        <input type="password" th:field="*{confirmationPassword}" class="form-control"
+                               name="confirmationPassword"
                                placeholder="Confirm Password" required>
                         <div class="invalid-feedback" id="confirmationPasswordError"></div>
                         <!--Register button-->

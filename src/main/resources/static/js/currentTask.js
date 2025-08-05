@@ -15,7 +15,6 @@ document.getElementById('post-comment-btn').addEventListener('click', async () =
         });
 
         if(response.ok){
-//            console.log("Comment posted :^) ");
             await refreshComments(taskId);
             message.value = '';
             const commentsContainer = document.getElementById('comments-container');

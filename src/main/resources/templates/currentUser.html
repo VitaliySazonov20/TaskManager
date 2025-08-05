@@ -13,86 +13,101 @@
 <body>
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<div class="profile-container">
-    <div class="profile-header">
-        <h2>User Profile</h2>
-    </div>
-
-    <form id="profileForm" th:object="${editedUser}" th:action="@{/user/saveProfile}" method="post">
-        <div class="form-group">
-            <label for="firstName">First Name</label>
-            <input type="text" id="firstName" name="firstName" th:field="*{firstName}">
-        </div>
-
-        <div class="form-group">
-            <label for="lastName">Last Name</label>
-            <input type="text" id="lastName" name="lastName" th:field="*{lastName}">
-        </div>
-
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" th:field="*{email}"
-                   th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
-                   class="form-control" required>
-            <div th:if="${#fields.hasErrors('email')}" class="invalid-feedback">
-                <span th:errors="*{email}"></span>
+<div class="container py-5">
+    <div class="profile-container">
+        <div class="profile-header text-center">
+            <div class="profile-icon mb-3">
+                <i class="bi bi-person-circle"></i>
             </div>
+            <h2 class="fw-bold">User Profile</h2>
+            <p class="text-muted">Manage your account details</p>
         </div>
 
 
-        <div class="button-group">
-            <button type="submit" class="btn btn-primary" id="saveChangesBtn">Save Changes</button>
-            <button type="button" class="btn btn-secondary" id="showPasswordChangeBtn">Change Password</button>
-        </div>
-    </form>
-
-
-    <div id="passwordChangeSection" class="mt-4" style="display: none;"
-         th:data-show-password="${showPasswordSection}">
-        <form id="passwordChangeForm" th:object="${passwordChange}"
-              th:action="@{/user/changePassword}" method="post">
-
-            <div class="form-group mb-3">
-                <label>Current Password</label>
-                <input type="password" th:field="*{oldPassword}" class="form-control"
-                       th:classappend="${#fields.hasErrors('oldPassword')} ? 'is-invalid' : ''">
-                <div th:if="${#fields.hasErrors('oldPassword')}" class="invalid-feedback">
-                    <span th:errors="*{oldPassword}"></span>
-                </div>
+        <form id="profileForm" th:object="${editedUser}" th:action="@{/user/saveProfile}" method="post">
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" name="firstName"
+                       th:field="*{firstName}" class="form-control">
             </div>
 
-
-            <div class="form-group mb-3">
-                <label>New Password</label>
-                <input type="password" th:field="*{newPassword}" class="form-control"
-                       th:classappend="${#fields.hasErrors('newPassword')} ? 'is-invalid' : ''">
-                <div th:if="${#fields.hasErrors('newPassword')}" class="invalid-feedback">
-                    <span th:errors="*{newPassword}"></span>
-                </div>
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" name="lastName"
+                       th:field="*{lastName}" class="form-control">
             </div>
 
-
-            <div class="form-group mb-3">
-                <label>Confirm Password</label>
-                <input type="password" th:field="*{confirmNewPassword}" class="form-control"
-                       th:classappend="${#fields.hasErrors('confirmNewPassword')} ? 'is-invalid' : ''">
-                <div th:if="${#fields.hasErrors('confirmNewPassword')}" class="invalid-feedback">
-                    <span th:errors="*{confirmNewPassword}"></span>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" th:field="*{email}"
+                       th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                       class="form-control" required>
+                <div th:if="${#fields.hasErrors('email')}" class="invalid-feedback">
+                    <span th:errors="*{email}"></span>
                 </div>
             </div>
 
 
             <div class="button-group">
-                <button type="button" id="cancelPasswordChangeBtn" class="btn btn-outline-secondary">
-                    Cancel
+                <button type="submit" class="btn btn-primary" id="saveChangesBtn">
+                    <i class="bi bi-save me-1"></i> Save Changes
                 </button>
-                <button type="submit" class="btn btn-danger">Save Password</button>
+                <button type="button" class="btn btn-outline-secondary" id="showPasswordChangeBtn">
+                    <i class="bi bi-key me-1"></i> Change Password
+                </button>
             </div>
-
         </form>
 
-    </div>
 
+        <div id="passwordChangeSection" class="mt-4 password-change-section" style="display: none;"
+             th:data-show-password="${showPasswordSection}">
+            <h5 class="section-title mb-4">Change Password</h5>
+            <form id="passwordChangeForm" th:object="${passwordChange}"
+                  th:action="@{/user/changePassword}" method="post">
+
+                <div class="form-group mb-4">
+                    <label>Current Password</label>
+                    <input type="password" th:field="*{oldPassword}" class="form-control"
+                           th:classappend="${#fields.hasErrors('oldPassword')} ? 'is-invalid' : ''">
+                    <div th:if="${#fields.hasErrors('oldPassword')}" class="invalid-feedback">
+                        <span th:errors="*{oldPassword}"></span>
+                    </div>
+                </div>
+
+
+                <div class="form-group mb-4">
+                    <label>New Password</label>
+                    <input type="password" th:field="*{newPassword}" class="form-control"
+                           th:classappend="${#fields.hasErrors('newPassword')} ? 'is-invalid' : ''">
+                    <div th:if="${#fields.hasErrors('newPassword')}" class="invalid-feedback">
+                        <span th:errors="*{newPassword}"></span>
+                    </div>
+                </div>
+
+
+                <div class="form-group mb-4">
+                    <label>Confirm Password</label>
+                    <input type="password" th:field="*{confirmNewPassword}" class="form-control"
+                           th:classappend="${#fields.hasErrors('confirmNewPassword')} ? 'is-invalid' : ''">
+                    <div th:if="${#fields.hasErrors('confirmNewPassword')}" class="invalid-feedback">
+                        <span th:errors="*{confirmNewPassword}"></span>
+                    </div>
+                </div>
+
+
+                <div class="button-group">
+                    <button type="button" id="cancelPasswordChangeBtn" class="btn btn-outline-secondary">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-key-fill me-1"></i> Save Password
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
 
 </div>
 

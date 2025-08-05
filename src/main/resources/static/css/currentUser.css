@@ -1,88 +1,198 @@
+:root {
+    --primary-color: #6B73FF;
+    --primary-hover: #000DFF;
+    --error-color: #dc3545;
+    --success-color: #28a745;
+    --border-radius: 10px;
+    --transition-speed: 0.3s;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
 body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fa;
-            margin: 0;
-            padding: 20px;
-            color: #333;
-        }
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background-color: #f8fafc;
+    color: #334155;
+    line-height: 1.6;
+    padding: 20px;
+}
 
-        .profile-container {
-            max-width: 600px;
-            margin: 30px auto;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-        }
+.profile-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 2.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-        .profile-header {
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-        }
+.profile-container:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+}
 
-        .profile-header h2 {
-            margin: 0;
-            color: #2c3e50;
-        }
+.profile-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+.profile-icon {
+    font-size: 4rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
 
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
+.profile-header h2 {
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
 
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-            transition: border 0.3s;
-        }
+.profile-subheader {
+    color: #64748b;
+    font-size: 1.1rem;
+}
 
-        .form-group input:focus {
-            border-color: #3498db;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-        }
+.section-title {
+    color: #1e293b;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e2e8f0;
+}
 
-        .button-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-        }
+.form-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
 
-        .btn {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            flex: 1;
-        }
+.form-control {
+    height: 50px;
+    padding: 1rem 1rem 0.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--border-radius);
+    background-color: #f8fafc;
+    transition: all var(--transition-speed) ease;
+}
 
-        .btn-primary {
-            background-color: #3498db;
-            color: white;
-        }
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(107, 115, 255, 0.2);
+    background-color: white;
+}
 
-        .btn-primary:hover {
-            background-color: #2980b9;
-        }
+.floating-label {
+    position: relative;
+}
 
-        .btn-secondary {
-            background-color: #f1f1f1;
-            color: #333;
-        }
+.floating-label label {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    color: #64748b;
+    transition: all var(--transition-speed) ease;
+    pointer-events: none;
+}
 
-        .btn-secondary:hover {
-            background-color: #e0e0e0;
-        }
+.floating-label input:focus + label,
+.floating-label input:not(:placeholder-shown) + label {
+    top: 0.25rem;
+    left: 1rem;
+    font-size: 0.75rem;
+    color: var(--primary-color);
+    background: white;
+    padding: 0 0.25rem;
+}
+
+.floating-label input::placeholder {
+    color: transparent;
+}
+
+.invalid-feedback {
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.is-invalid {
+    border-color: var(--error-color);
+}
+
+.is-invalid:focus {
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2);
+}
+
+.button-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    transition: all var(--transition-speed) ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: rgba(107, 115, 255, 0.1);
+    color: var(--primary-hover);
+    border-color: var(--primary-hover);
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background-color: var(--error-color);
+    border-color: var(--error-color);
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+    transform: translateY(-2px);
+}
+
+.password-change-section {
+    background: #f8fafc;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 576px) {
+    .profile-container {
+        padding: 1.5rem;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
