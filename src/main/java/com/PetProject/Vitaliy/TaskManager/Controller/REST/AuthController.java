@@ -3,11 +3,14 @@ package com.PetProject.Vitaliy.TaskManager.Controller.REST;
 import com.PetProject.Vitaliy.TaskManager.Model.RegistrationForm;
 import com.PetProject.Vitaliy.TaskManager.Service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -28,10 +31,27 @@ public class AuthController {
     private UserService userService;
 
 
-    @Operation(summary = "Register new user")
+    @Operation(
+            summary = "Register new user account",
+            description = "Creates new user with email verification requirements"
+    )
     @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "User registered"),
-            @ApiResponse(responseCode = "400", description = "Validation errors"),
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "User created successfully",
+                    content = @Content(
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                            "firstName": "John",
+                                            "lastName": "Doe",
+                                            "email": "John@Doe.com",
+                                            }
+                                            """
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = "400",description = "Validation errors"),
             @ApiResponse(responseCode = "409", description = "Email already exists")
     })
     @PostMapping("/register")
@@ -53,11 +73,16 @@ public class AuthController {
                         Map.of("email", "Email already exists"));
             }
             userService.registerUser(registrationForm);
-            return ResponseEntity.status(HttpStatus.CREATED).body(
-                    registrationForm);
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("message","Registration failed. Please try again."));
+            return ResponseEntity.ok().body(
+                    Map.of("firstName", registrationForm.getFirstName(),
+                            "lastName", registrationForm.getLastName(),
+                            "email", registrationForm.getEmail()));
+        } catch (DataAccessException e){
+            return ResponseEntity.internalServerError()
+                    .body("Failed to complete registration due to database issues");
+        }catch (Exception e){
+            return ResponseEntity.internalServerError()
+                    .body("Registration failed. Please try again.");
         }
     }
 }

@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
+import java.nio.file.AccessDeniedException;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -108,7 +110,14 @@ public class TaskController {
             @PathVariable BigInteger taskId,
             @RequestBody String message,
             @AuthenticationPrincipal UserCredentials userCredentials) {
-        try{
+        if (message.trim().isEmpty() || message.trim().isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+        if (taskId == null || taskId.compareTo(BigInteger.ZERO) <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        try {
             Comment comment = new Comment();
             comment.setTask(taskService.getTaskById(taskId));
             comment.setUser(userCredentials.getUser());
@@ -121,9 +130,11 @@ public class TaskController {
                             comment.getId(),
                             comment.getText()
                     ));
-        } catch (Exception e){
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error","Failed to add comment"));
+                    .body("Failed to add comment");
         }
     }
 
@@ -202,31 +213,60 @@ public class TaskController {
             )
             @RequestBody String priorityString) {
         try {
-            if(priorityString == null || priorityString.isEmpty() || priorityString.isBlank()){
+            if (priorityString == null || priorityString.isEmpty() || priorityString.isBlank()) {
                 return ResponseEntity.badRequest().body("Priority cannot be empty");
             }
 
             Task task = taskService.getTaskById(taskId);
             Priority priority;
-            try{
+            try {
                 priority = Priority.valueOf(priorityString.toUpperCase());
-            } catch (IllegalArgumentException e){
+            } catch (IllegalArgumentException e) {
                 log.error("Invalid priority value was used", e);
                 return ResponseEntity.badRequest().body("Invalid priority value. Valid values are:" +
                         Arrays.toString(Priority.values()));
             }
             task.setPriority(priority);
             taskService.saveTask(task);
-            return ResponseEntity.status(HttpStatus.OK).body("Status successfully changed");
-        } catch (Exception e){
-            log.error("Unexpected error occurred",e);
+            return ResponseEntity.ok().body("Status successfully changed");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error("Unexpected error occurred", e);
             return ResponseEntity.internalServerError().body("Error updating task priority");
         }
     }
 
     @Operation(summary = "Get task by ID")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Task found"),
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Task details",
+                    content = @Content(
+                            schema = @Schema(implementation = TaskModel.class),
+                            examples = @ExampleObject(
+                                    name = "Sample task",
+                                    value = """
+                                            {
+                                              "title": "Fix authentication",
+                                              "description": "Update JWT implementation",
+                                              "dueDate": "2023-12-15",
+                                              "priority": "URGENT",
+                                              "createdByUserId": 123,
+                                              "userId": 456
+                                            }"""
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid ID format",
+                    content = @Content(
+                            examples = @ExampleObject(
+                                    value = "Task ID must be a positive number"
+                            )
+                    )
+            ),
             @ApiResponse(responseCode = "404", description = "Task not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
@@ -236,17 +276,17 @@ public class TaskController {
             @PathVariable BigInteger taskId) {
 
 
-        try{
-            Task task = taskService.getTaskById(taskId);
-
-            if (task == null) {
-                return ResponseEntity.notFound().build();
+        try {
+            if (taskId == null || taskId.compareTo(BigInteger.ZERO) <= 0) {
+                return ResponseEntity.badRequest()
+                        .body("Task ID must be a positive number");
             }
 
-            TaskModel taskModel = new TaskModel();
-            if(task.getAssignedTo() !=null){
-                taskModel.setUserId(task.getAssignedTo().getId());
+            Task task = taskService.getTaskById(taskId);
 
+            TaskModel taskModel = new TaskModel();
+            if (task.getAssignedTo() != null) {
+                taskModel.setUserId(task.getAssignedTo().getId());
             }
             taskModel.setDueDate(task.getDueDate());
             taskModel.setPriority(task.getPriority());
@@ -255,8 +295,10 @@ public class TaskController {
             taskModel.setCreatedByUserId(task.getCreatedBy().getId());
 
             return ResponseEntity.ok(taskModel);
-        } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
                     .body("Error retrieving task: " + e.getMessage());
         }
     }

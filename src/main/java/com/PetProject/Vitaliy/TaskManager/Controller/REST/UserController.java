@@ -33,8 +33,16 @@ public class UserController {
     private UserService userService;
 
 
-    @Operation(summary = "Get all users")
-    @ApiResponse(responseCode = "200", description = "List of all users")
+    @Operation(
+            summary = "Get all users",
+            description = "Retrieves a list of all registered users in the system." +
+                    "Returns an empty list if no users are found."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "List of all users"),
+            @ApiResponse(responseCode = "204", description = "No users found in the system"),
+            @ApiResponse(responseCode = "500", description = "Internal server error occurred")
+    })
     @GetMapping
     public ResponseEntity<List<UserModel>> getAllUserModels(){
         try{
@@ -46,24 +54,28 @@ public class UserController {
                     .filter(Objects::nonNull)
                     .map(user->{
                         return new UserModel(
-                               user.getId(),
-                               user.getFirstName(),
-                               user.getLastName(),
-                               user.getEmail(),
-                               user.getUserCredentials().getRole()
+                                user.getId(),
+                                user.getFirstName(),
+                                user.getLastName(),
+                                user.getEmail(),
+                                user.getUserCredentials().getRole()
                        );
                     }).collect(Collectors.toList());
             return ResponseEntity.ok(userModels);
         } catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Collections.emptyList());
+            return ResponseEntity.internalServerError()
+                    .build();
         }
     }
-    @Operation(summary = "Delete user")
+    @Operation(
+            summary = "Delete user",
+            description = "Permanently removes a user. Requires ADMIN role."
+    )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "User has been deleted"),
-            @ApiResponse(responseCode = "404", description = "User not found"),
             @ApiResponse(responseCode = "400", description = "Invalid ID supplied"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "409", description = "Data conflict (user might have existing references)"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
     @PreAuthorize("hasRole('ADMIN')")
@@ -72,24 +84,30 @@ public class UserController {
             @Parameter(description = "User ID")
             @PathVariable BigInteger id){
         if(id == null|| id.compareTo(BigInteger.ZERO)<=0){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("ID must be a positive number");
         }
         try {
             userService.deleteUserById(id);
-            return ResponseEntity.ok().body("User has been deleted");
+            return ResponseEntity.ok().body(String.format("User with ID %s deleted successfully", id));
         } catch(UserNotFoundException e){
             return ResponseEntity.notFound().build();
         } catch (DataAccessException e){
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Cannot delete user due to data constraints");
         } catch (Exception e){
-            return ResponseEntity.internalServerError().build();
+            return ResponseEntity.internalServerError().body("Unable to process deletion request");
         }
 
     }
-    @Operation(summary = "Get user by ID")
+    @Operation(
+            summary = "Get user by ID",
+            description = "Retrieves complete user information. Requires ADMIN privileges."
+    )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "User found"),
-            @ApiResponse(responseCode = "404", description = "User not found")
+            @ApiResponse(responseCode = "200", description = "User details retrieved successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid ID format"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "409", description = "Data access conflict"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
@@ -113,19 +131,25 @@ public class UserController {
         } catch (UserNotFoundException e){
             return  ResponseEntity.notFound().build();
         }catch (DataAccessException e){
-            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+            return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body("Database error occurred");
         }
         catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "An unexpected error occurred"));
+                    .body("An unexpected error occurred");
         }
     }
 
-    @Operation(summary = "Update User")
+    @Operation(
+            summary = "Update User",
+            description = "Partially updates user information. Requires ADMIN role."
+    )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "User updated"),
-            @ApiResponse(responseCode = "404", description = "User not found")
+            @ApiResponse(responseCode = "200", description = "User updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid ID or request body"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "409", description = "Data access conflict"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
@@ -133,6 +157,7 @@ public class UserController {
             @Parameter(description = "User ID")
             @PathVariable BigInteger id,
             @Valid @RequestBody UserModel userModel){
+
         if (id == null || id.compareTo(BigInteger.ZERO) <= 0) {
             return ResponseEntity.badRequest()
                     .body("ID must be a positive number");
@@ -153,7 +178,10 @@ public class UserController {
             return ResponseEntity.ok().body("User updated successfully");
         } catch(UserNotFoundException e){
             return ResponseEntity.notFound().build();
-        } catch (Exception e){
+        } catch (DataAccessException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Database error during update");
+        }catch (Exception e){
             return ResponseEntity.internalServerError()
                     .body("Failed to update user");
         }
