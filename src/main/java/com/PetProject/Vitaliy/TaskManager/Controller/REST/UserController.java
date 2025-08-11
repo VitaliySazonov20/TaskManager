@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 @Tag(name = "User management")
 @RestController
 @RequestMapping("/api/users")
+@PreAuthorize("isAuthenticated()")
 public class UserController {
 
     @Autowired
@@ -36,13 +38,15 @@ public class UserController {
     @Operation(
             summary = "Get all users",
             description = "Retrieves a list of all registered users in the system." +
-                    "Returns an empty list if no users are found."
+                    "Returns an empty list if no users are found.",
+            security = @SecurityRequirement(name = "Bearer Authentication")
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "List of all users"),
             @ApiResponse(responseCode = "204", description = "No users found in the system"),
             @ApiResponse(responseCode = "500", description = "Internal server error occurred")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<UserModel>> getAllUserModels(){
         try{

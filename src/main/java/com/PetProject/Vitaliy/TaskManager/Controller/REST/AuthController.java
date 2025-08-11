@@ -1,6 +1,10 @@
 package com.PetProject.Vitaliy.TaskManager.Controller.REST;
 
+import com.PetProject.Vitaliy.TaskManager.JWT.JwtTokenUtil;
+import com.PetProject.Vitaliy.TaskManager.Model.LoginRequest;
+import com.PetProject.Vitaliy.TaskManager.Model.LoginResponse;
 import com.PetProject.Vitaliy.TaskManager.Model.RegistrationForm;
+import com.PetProject.Vitaliy.TaskManager.Service.CustomUserDetailsService;
 import com.PetProject.Vitaliy.TaskManager.Service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,11 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +35,14 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
 
     @Operation(
             summary = "Register new user account",
@@ -83,6 +96,23 @@ public class AuthController {
         }catch (Exception e){
             return ResponseEntity.internalServerError()
                     .body("Registration failed. Please try again.");
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> getJwtToken(@RequestBody LoginRequest loginRequest){
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsername(),loginRequest.getPassword())
+            );
+            UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
+
+            String token = jwtTokenUtil.generateToken(userDetails);
+
+            return ResponseEntity.ok(new LoginResponse(token));
+        } catch (BadCredentialsException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
     }
 }
