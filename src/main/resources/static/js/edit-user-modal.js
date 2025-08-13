@@ -4,7 +4,13 @@ document.getElementById('editUserModal').addEventListener('show.bs.modal', async
     const button = event.relatedTarget;
     userIdToEdit = button.getAttribute('data-user-id');
     try {
-        const response = await fetch(`/api/users/${userIdToEdit}`);
+        const response = await fetch(`/api/users/${userIdToEdit}`,{
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': 'Bearer '+ sessionStorage.getItem("jwt")
+            }
+        });
         if (!response.ok) throw new Error("Failed to fetch user");
 
         const user = await response.json();
@@ -42,7 +48,7 @@ document.getElementById('confirmChanges').addEventListener('click', async functi
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
-                [csrfHeader]: csrfToken
+                'Authorization': 'Bearer '+ sessionStorage.getItem("jwt")
             },
             body: JSON.stringify(userData)
         });

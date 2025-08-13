@@ -262,7 +262,6 @@
         window.location.href = `/tasks/${taskId}`;
     }
     document.querySelectorAll('.task-row').forEach(row => {
-    console.log("row", row);
         row.addEventListener('click', (e) => {
             // Don't trigger if clicking on links/buttons
             if (!e.target.closest('a, button, [data-bs-toggle]')) {

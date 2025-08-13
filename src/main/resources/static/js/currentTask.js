@@ -8,7 +8,7 @@ document.getElementById('post-comment-btn').addEventListener('click', async () =
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content
+                'Authorization': 'Bearer '+ sessionStorage.getItem("jwt")
             },
             body: message.value.trim()
 
@@ -48,7 +48,7 @@ async function updatePriority(taskId,priority){
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').content
+                'Authorization': 'Bearer '+ sessionStorage.getItem("jwt")
             },
             body: `${priority}`
         });

@@ -1,6 +1,12 @@
 document.querySelector('.add-task-btn').addEventListener('click', async () => {
   try{
-    const response = await fetch('/api/users');
+    const response = await fetch('/api/users',{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': 'Bearer '+ sessionStorage.getItem("jwt")
+        }
+    });
     if(!response.ok){
         throw new Error('Failed to fetch users')
     }

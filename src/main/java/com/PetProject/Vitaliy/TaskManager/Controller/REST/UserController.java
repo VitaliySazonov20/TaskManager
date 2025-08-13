@@ -46,7 +46,7 @@ public class UserController {
             @ApiResponse(responseCode = "204", description = "No users found in the system"),
             @ApiResponse(responseCode = "500", description = "Internal server error occurred")
     })
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<UserModel>> getAllUserModels(){
         try{
@@ -82,7 +82,7 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "Data conflict (user might have existing references)"),
             @ApiResponse(responseCode = "500", description = "Internal server error"),
     })
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or @security.isOwner(#id)")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUser(
             @Parameter(description = "User ID")
@@ -113,7 +113,7 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "Data access conflict"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or @security.isOwner(#id)")
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserById(
             @Parameter(description = "User ID")
@@ -155,7 +155,7 @@ public class UserController {
             @ApiResponse(responseCode = "409", description = "Data access conflict"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or @security.isOwner(#id)")
     @PatchMapping("/{id}")
     public ResponseEntity<String> updateUser(
             @Parameter(description = "User ID")
@@ -177,7 +177,7 @@ public class UserController {
                         .body("Email already exists");
             }
 
-            user.setEmail(user.getEmail());
+            user.setEmail(userModel.getEmail());
             userService.saveUser(user);
             return ResponseEntity.ok().body("User updated successfully");
         } catch(UserNotFoundException e){

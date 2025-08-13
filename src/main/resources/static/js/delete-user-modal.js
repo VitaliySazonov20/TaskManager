@@ -15,7 +15,7 @@ document.getElementById('confirmDelete').addEventListener('click', async functio
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                [csrfHeader]: csrfToken
+                'Authorization': 'Bearer '+ sessionStorage.getItem("jwt")
             }
         });
 

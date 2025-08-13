@@ -14,7 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.math.BigInteger;
 import java.security.Principal;
 
-@Service
+@Service("taskSecurity")
 public class TaskSecurityService {
 
     @Autowired

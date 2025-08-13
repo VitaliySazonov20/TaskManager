@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,7 @@ import java.util.Map;
 
 @Tag(name = "Task Management")
 @RestController
+@PreAuthorize("isAuthenticated()")
 @RequestMapping("/api/tasks")
 public class TaskController {
 
@@ -104,6 +106,7 @@ public class TaskController {
                     )
             )
     })
+    @PreAuthorize("hasRole('ADMIN') or @taskSecurity.isCreator(#taskId) or @taskSecurity.isAssignee(#taskId)")
     @PostMapping("/{taskId}/comments")
     public ResponseEntity<?> addComment(
             @Parameter(description = "Task ID", required = true, example = "1")
@@ -194,6 +197,7 @@ public class TaskController {
                     )
             )
     })
+    @PreAuthorize("hasRole('ADMIN') or @taskSecurity.isCreator(#taskId) or @taskSecurity.isAssignee(#taskId)")
     @PatchMapping("/{taskId}/priority")
     public ResponseEntity<String> changePriority(
             @Parameter(description = "Task ID", required = true, example = "1")
@@ -270,6 +274,7 @@ public class TaskController {
             @ApiResponse(responseCode = "404", description = "Task not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
+    @PreAuthorize("hasRole('ADMIN') or @taskSecurity.isCreator(#taskId) or @taskSecurity.isAssignee(#taskId)")
     @GetMapping("/{taskId}")
     public ResponseEntity<?> getTaskById(
             @Parameter(description = "Task ID", required = true, example = "1")

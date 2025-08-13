@@ -162,29 +162,25 @@ public class GeneralViewController {
         return "redirect:" + request.getHeader("Referer");
     }
 
-    //    @PreAuthorize("""
-//            hasRole('ADMIN') or
-//            @taskSecurityService.isCreator(#taskId,principal) or
-//            @taskSecurityService.isAssignee(#taskId,principal)
-//            """)
+    @PreAuthorize("hasRole('ADMIN') or @taskSecurity.isCreator(#taskId) or @taskSecurity.isAssignee(#taskId)")
     @GetMapping("/tasks/{taskId}")
     public String viewTask(@PathVariable BigInteger taskId,
                            Model model,
                            RedirectAttributes redirectAttributes) {
         try {
-            if (!securityContextService.isAdmin() &&
-                    !taskSecurityService.isCreator(taskId) &&
-                    !taskSecurityService.isAssignee(taskId) &&
-                    !taskSecurityService.assigneeIsNull(taskId)) {
-                List<Task> allTasks = taskService.getAllTasks();
-
-                model.addAttribute("permissionDenied", true);
-                model.addAttribute("allTasks", allTasks);
-                model.addAttribute("taskStatus", TaskStatus.class);
-                model.addAttribute("taskPriority", Priority.class);
-                model.addAttribute("currentUserId", securityContextService.getCurrentUser().getId());
-                return "dashboard";
-            }
+//            if (!securityContextService.isAdmin() &&
+//                    !taskSecurityService.isCreator(taskId) &&
+//                    !taskSecurityService.isAssignee(taskId) &&
+//                    !taskSecurityService.assigneeIsNull(taskId)) {
+//                List<Task> allTasks = taskService.getAllTasks();
+//
+//                model.addAttribute("permissionDenied", true);
+//                model.addAttribute("allTasks", allTasks);
+//                model.addAttribute("taskStatus", TaskStatus.class);
+//                model.addAttribute("taskPriority", Priority.class);
+//                model.addAttribute("currentUserId", securityContextService.getCurrentUser().getId());
+//                return "dashboard";
+//            }
             Task currentTask = taskService.getTaskById(taskId);
             List<Comment> allComments = commentService.getCommentsById(taskId);
             model.addAttribute("currentTask", currentTask);
