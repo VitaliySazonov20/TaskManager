@@ -1,6 +1,5 @@
 package com.PetProject.Vitaliy.TaskManager;
 
-import com.PetProject.Vitaliy.TaskManager.EventListener.DatabaseDataInitializer;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -30,7 +29,6 @@ public class DatabaseSchemaInitializer {
     private DatabaseDataInitializer databaseDataInitializer;
 
 
-    @PostConstruct
     public void initializeSchema(){
         try (Connection connection = dataSource.getConnection()){
             if(!isSchemaComplete(connection)){
@@ -40,8 +38,6 @@ public class DatabaseSchemaInitializer {
                     statement.execute(sql);
                 }
             }
-//            eventPublisher.publishEvent(new DataBaseReadyEvent(this));
-            databaseDataInitializer.initTestData();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -51,21 +47,17 @@ public class DatabaseSchemaInitializer {
     private boolean isSchemaComplete(Connection connection) throws SQLException{
         for (String table : REQUIRED_TABLES){
             if(!tableExists(connection,table)){
-                System.out.println("SOMETHING IS NOT RIGHT WITH " + table);
-
                 return false;
             }
         }
         for (String type : REQUIRED_TYPES){
             if(!typeExists(connection,type)){
-                System.out.println("SOMETHING IS NOT RIGHT WITH " + type);
                 return false;
             }
         }
 
         for (String function : REQUIRED_FUNCTIONS){
             if(!functionExists(connection,function)){
-                System.out.println("SOMETHING IS NOT RIGHT FUNCTIONS");
                 return false;
             }
         }

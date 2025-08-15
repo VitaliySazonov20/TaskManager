@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CommentService {
@@ -36,5 +37,9 @@ public class CommentService {
         Task task = taskRepository.findById(taskId).orElseThrow(()->
                 new EntityNotFoundException("Task not found with ID: " + taskId));
         return commentRepository.findByTaskId(task.getId());
+    }
+
+    public Comment getCommentById(BigInteger commentId){
+        return commentRepository.findById(commentId).orElseThrow(()-> new EntityNotFoundException("Comment not found with ID: " + commentId));
     }
 }
