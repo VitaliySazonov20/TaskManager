@@ -32,8 +32,10 @@ public class DatabaseSchemaInitializer {
     public void initializeSchema(){
         try (Connection connection = dataSource.getConnection()){
             if(!isSchemaComplete(connection)){
-                String sql = new String(Files.readAllBytes(
-                        new ClassPathResource("schema_dump.sql").getFile().toPath()));
+//                String sql = new String(Files.readAllBytes(
+//                        new ClassPathResource("schema_dump.sql").getFile().toPath()));
+                ClassPathResource resource =new ClassPathResource("schema_dump.sql");
+                String sql = new String (resource.getInputStream().readAllBytes());
                 try (Statement statement = connection.createStatement()){
                     statement.execute(sql);
                 }

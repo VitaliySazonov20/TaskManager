@@ -33,12 +33,13 @@ public class DatabaseResetService {
         entityManager.createNativeQuery("DELETE FROM users").executeUpdate();
         entityManager.createNativeQuery("DELETE FROM audit_log").executeUpdate();
 
-        databaseSchemaInitializer.initializeSchema();
+//        databaseSchemaInitializer.initializeSchema();
+//
+//        databaseDataInitializer.initTestData();
 
-        databaseDataInitializer.initTestData();
-
-        entityManager.clear();
+//        entityManager.clear();
 
     }
+
 
 }

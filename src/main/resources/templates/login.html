@@ -54,12 +54,6 @@
                 <label for="password">Password</label>
             </div>
 
-<!--            &lt;!&ndash; Remember Me &ndash;&gt;-->
-<!--            <div class="form-check mb-3">-->
-<!--                <input class="form-check-input" type="checkbox" id="remember-me" name="remember-me">-->
-<!--                <label class="form-check-label" for="remember-me">Remember me</label>-->
-<!--            </div>-->
-
             <!-- Submit Button -->
             <button class="w-100 btn btn-lg btn-primary mb-3" type="submit">
                 <i class="bi bi-box-arrow-in-right me-2"></i> Sign In
@@ -69,6 +63,16 @@
         <!-- Optional: Registration Link -->
         <div class="text-center">
             <p class="text-muted">Don't have an account? <a th:href="@{/register}">Sign up</a></p>
+        </div>
+
+        <div class="alert alert-info mt-4">
+            <h5 class="alert-heading">Demo Credentials</h5>
+            <p class="mb-1">Feel free to use these test accounts:</p>
+            <ul class="mb-1">
+                <li><strong>Admin:</strong> FakeAdminEmail@email.com / password</li>
+                <li><strong>User:</strong> FakeEmail@email.com / qwe123</li>
+            </ul>
+            <p class="mb-0 small text-muted">This is a demo application - please don't use real passwords.</p>
         </div>
     </div>
 </div>

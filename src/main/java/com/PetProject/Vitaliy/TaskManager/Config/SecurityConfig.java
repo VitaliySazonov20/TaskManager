@@ -76,7 +76,8 @@ public class SecurityConfig{
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register", "/swagger-ui/**",
+                        .requestMatchers("/login", "/register", "/swagger-ui/**","/",
+                                "/swagger-ui.html",
                                 "/v3/api-docs/**",
                                 "/swagger-resources/**",
                                 "/webjars/**",
@@ -87,7 +88,7 @@ public class SecurityConfig{
                 .formLogin(form -> form
                         .loginPage("/login")  // Custom login page
                         .loginProcessingUrl("/login")  // Process form submissions
-                        .defaultSuccessUrl("/", true)  // Redirect after success
+                        .defaultSuccessUrl("/dashboard", true)  // Redirect after success
                         .failureUrl("/login?error=true")  // Redirect on failure
                         .permitAll()
                 )

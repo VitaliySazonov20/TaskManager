@@ -22,7 +22,7 @@ public class DatabaseInitializer {
         databaseDataInitializer.initTestData();
     }
 
-    @Scheduled(cron = "0 1 0 * * ?")
+    @Scheduled(cron = "0 1 0 * * *")
     public void afterDatabaseResetReInit() {
         databaseSchemaInitializer.initializeSchema();
         databaseDataInitializer.initTestData();

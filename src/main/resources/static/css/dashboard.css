@@ -148,6 +148,16 @@ body {
   padding: 2rem;
   color: #6c757d;
 }
+
+.card-body[data-task-id] {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.card-body[data-task-id]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .dashboard .row {
