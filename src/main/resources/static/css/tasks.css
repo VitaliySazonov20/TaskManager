@@ -87,7 +87,7 @@ body {
     align-items: center;
     justify-content: center;
     font-size: 1.2rem;
-    z-index: 1; /* Ensure it stays above other content */
+    z-index: 1;
 }
 .add-task-btn i {
     margin-right: 6px;

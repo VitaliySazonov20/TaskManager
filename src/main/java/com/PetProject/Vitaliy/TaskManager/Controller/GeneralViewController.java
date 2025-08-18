@@ -162,7 +162,7 @@ public class GeneralViewController {
         return "redirect:" + request.getHeader("Referer");
     }
 
-    @PreAuthorize("hasRole('ADMIN') or @taskSecurity.isCreator(#taskId) or @taskSecurity.isAssignee(#taskId)")
+    @PreAuthorize("hasRole('ADMIN') or @taskSecurity.isCreator(#taskId) or @taskSecurity.isAssignee(#taskId) or @taskSecurity.assigneeIsNull(#taskId)")
     @GetMapping("/tasks/{taskId}")
     public String viewTask(@PathVariable BigInteger taskId,
                            Model model,

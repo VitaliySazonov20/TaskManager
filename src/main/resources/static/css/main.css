@@ -7,8 +7,22 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
         .tech-badge {
-            margin-right: 5px;
-            margin-bottom: 5px;
+            padding: 0.5em 1em;
+                border-radius: 50px;
+                font-weight: 500;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                margin: 0.25rem;
+        }
+        .tech-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        h5.text-muted {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
         }
         .hero-section {
             background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
